@@ -1,0 +1,42 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+
+int main() {
+    string name;
+    int customerID, unitsConsumed;
+    cout << "Enter name: ";
+    cin >> name;
+    cout << "Enter customer ID: ";
+    cin >> customerID;
+    cout << "Enter units comsumed: ";
+    cin >> unitsConsumed;
+    int temp = unitsConsumed;
+    float bill = 0;
+    if (temp >= 500) {
+        bill += (temp) * 35.9;
+        // temp -= (temp - 499);
+    } else
+    if (temp >= 300) {
+        bill += (temp) * 27.1;
+        // temp -= (temp - 299);
+    } else
+    if (temp >= 200) {
+        bill += (temp) * 20.1;
+        // temp -= (temp - 199);
+    } else
+    if (temp >= 0 && temp <= 199) {
+        bill += temp * 16.2;
+    } 
+    int surcharge = 0;
+    if (bill >= 18000) {
+        surcharge = bill * 0.15;
+    }
+    cout << "Name: " << name << "\n" << "ID: " << customerID << "\n";
+    cout << "Units used: " << unitsConsumed <<endl;
+    cout << "Bill: " << bill <<endl;
+    cout << "Surcharge: " << surcharge <<endl;
+    cout << "Total Bill: " << surcharge + bill <<endl;
+    return 0;
+}
