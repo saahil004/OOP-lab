@@ -1,0 +1,17 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+    int size, total = 0;
+    cout << "Enter size of array: ";
+    cin >> size;
+    int *arr = new int[size];
+    for (int i = 0; i < size; i++) {
+        cout << "Enter value for element " << i << ": ";
+        cin >> arr[i];
+        total += arr[i];
+    }
+    cout << "Total is " << total << endl;
+    delete(arr);
+    return 0;
+}
