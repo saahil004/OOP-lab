@@ -1,0 +1,14 @@
+#include <iostream>
+#include <string>
+#include <cstdlib>
+using namespace std;
+
+int main(int argc, char *argv[]) {
+    float avg;
+    for (int i = 3; i < 8; i++) {
+        avg += atoi(argv[i]);
+    }
+    avg = avg / 5;
+    cout << "Avgerage: " << avg << endl;
+    return 0;
+}
