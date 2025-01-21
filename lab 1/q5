@@ -1,0 +1,29 @@
+#include <iostream>
+#include <cstdio>
+#include <string>
+using namespace std;
+
+int main() {
+    string name;
+    int adults, children;
+    float percent, adultsp, childsp;
+    cout << "Enter name of movie: ";
+    cin >> name;
+    cout << "Enter price of adult ticket: ";
+    cin >> adultsp;
+    cout << "Enter price of child ticket: ";
+    cin >> childsp;
+    cout << "Enter number of adult tickets sold: ";
+    cin >> adults;
+    cout << "Enter number of child tickets sold: ";
+    cin >> children;
+    cout << "Enter charity percentage: ";
+    cin >> percent;
+    cout << "*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_" << endl;
+    cout << "Movie name............" << name << endl;
+    cout << "Tickets sold............" << adults + children << endl;
+    cout << "Gross Amount............" << ((adults*adultsp)+(children*childsp)) << endl;
+    cout << "Charity............" << ((adults*adultsp)+(children*childsp))*percent/100 << endl;
+    cout << "Net............" << ((adults*adultsp)+(children*childsp)) - ((adults*adultsp)+(children*childsp))*percent/100 << endl;
+    return 0;
+}
