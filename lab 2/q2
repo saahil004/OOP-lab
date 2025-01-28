@@ -1,0 +1,33 @@
+#include <iostream>
+using namespace std;
+
+
+void* func(void *arr, int size) {
+    int *arr2 = static_cast<int*>(arr);
+    for (int i = 0; i < size; i++)
+    {
+        arr2[i] += 100;
+    }
+    return static_cast<void*>(arr2);
+}
+
+int main(int argc, char *argv[]) {
+    if (argc < 2)
+    {
+        cout << "No arguements." << endl;
+        return 0;
+    }
+    int *arr = new int[argc-1];
+    for (int i = 0; i < argc; i++)
+    {
+        arr[i] = atoi(argv[i+1]);
+    }
+    void *result = func(static_cast<void*>(arr), argc-1);
+    arr = static_cast<int *>(result);
+    for (int i = 0; i < argc-1; i++)
+    {
+        cout << arr[i] << " ";
+    }
+    
+    return 0;
+}
