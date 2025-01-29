@@ -1,0 +1,45 @@
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+struct Subject {
+    string name;
+};
+
+struct Student {
+  int ID;
+  vector<Subject> Subjects;
+};
+
+int main() {
+    int nStudents;
+    int nSubjects;
+    cout << "Enter number of students: ";
+    cin >> nStudents;
+    cout << "Enter number of subjects: ";
+    cin >> nSubjects;
+    Student *Students = new Student[nStudents];
+    string sub;
+    for (int i = 0; i < nStudents; i++) {
+        cout << "Enter ID for student " << i+1 << ": ";
+        cin >> Students[i].ID;
+        for (int j = 0; j < nSubjects; j++) {
+            cout << "Enter subject " << j+1 << ": ";
+            cin >> sub;
+            Students[i].Subjects.push_back({sub});
+        }
+    }
+    for (int i = 0; i < nStudents; i++) {
+        cout << "Student " << i+1 << endl;
+        // cin >> Students[i].ID;
+        cout << "ID: " << Students[i].ID << endl;
+        for (int j = 0; j < nSubjects; j++) {
+            cout << "Subject " << j+1 << ": " << Students[i].Subjects[j].name << endl;
+            // cin >> sub;
+            // Students[i].Subjects.push_back({sub});
+        }
+    }
+    
+    return 0;
+}
