@@ -1,0 +1,31 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Employee {
+  int ID;
+  string name;
+  double salary;
+};
+
+struct Organization {
+  string name;
+  string number;
+  struct Employee emp;
+};
+
+int main() {
+    struct Organization org;
+    org.name = "NU-Fast";
+    org.number= "NUFAST123ABC";
+    org.emp.ID = 127;
+    org.emp.name = "Linus Sebastian";
+    org.emp.salary = 400000;
+    cout << "Size of structure organization: " << sizeof(struct Organization) << endl;
+    cout << "Name of organization: " << org.name << endl;
+    cout << "Organization number: " << org.number;
+    cout << "Employee ID: " << org.emp.ID << endl;
+    cout << "Employee name: " << org.emp.name << endl;
+    cout << "Employee salary: " << org.emp.salary << endl;
+    return 0;
+}
