@@ -1,0 +1,68 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Employee {
+  string name;
+  int ID;
+};
+
+int main() {
+    int size;
+    cout << "Enter size of the structure array: ";
+    cin >> size;
+    struct Employee Employees[size];
+    for (int i = 0; i < size; i++) {
+        cout << "Enter name of employee " << i+1 << ": ";
+        cin >> Employees[i].name;
+        cout << "Enter ID of employee " << i+1 << ": ";
+        cin >> Employees[i].ID;
+    }
+    cout << "Sorted by ID" << endl;
+    int tempID;
+    string tempName;
+    int swap = 0;
+    for (int i = size-1; i > 0; i--) {
+        swap = 0;
+        for (int j = 0; j < i; j++) {
+            if (Employees[j].ID > Employees[j+1].ID) {
+                tempID = Employees[j].ID;
+                Employees[j].ID = Employees[j+1].ID;
+                Employees[j+1].ID = tempID;
+                tempName = Employees[j].name;
+                Employees[j].name = Employees[j+1].name;
+                Employees[j+1].name = tempName;
+                swap = 1;
+            }
+        }
+        if (swap == 0) {
+            break;
+        }
+    }
+    for (int i = 0; i < size; i++) {
+        cout << "Employee " << i+1 << " Name: " << Employees[i].name << " ID: " << Employees[i].ID << endl;
+    }
+    cout << "Sorted by first alphabet of the name: " << endl;
+    // swap = 0;
+    for (int i = size-1; i > 0; i--) {
+        swap = 0;
+        for (int j = 0; j < i; j++) {
+            if (Employees[j].name[0] > Employees[j+1].name[0]) {
+                tempID = Employees[j].ID;
+                Employees[j].ID = Employees[j+1].ID;
+                Employees[j+1].ID = tempID;
+                tempName = Employees[j].name;
+                Employees[j].name = Employees[j+1].name;
+                Employees[j+1].name = tempName;
+                swap = 1;
+            }
+        }
+        if (swap == 0) {
+            break;
+        }
+    }
+    for (int i = 0; i < size; i++) {
+        cout << "Employee " << i+1 << " Name: " << Employees[i].name << " ID: " << Employees[i].ID << endl;
+    }
+    return 0;
+}
