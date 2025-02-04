@@ -20,14 +20,7 @@ public:
         }
     }
 
-    ~Matrix()
-    {
-        for (int i = 0; i < rows; i++)
-        {
-            delete[] matrix[i];
-        }
-        delete[] matrix;
-    }
+    
 
     int getRows()
     {
@@ -94,38 +87,38 @@ public:
         return 1;
     }
 
-    int multiply(Matrix m)
+    int multiply(Matrix *m)
     {
-        if (cols != m.rows)
+        if (cols != m->rows)
         {
             cout << "Cannot be multiplied." << endl;
             return 0;
         }
 
-        // Dynamically allocate memory for the result matrix
         int **n = new int *[rows];
         for (int i = 0; i < rows; i++)
         {
-            n[i] = new int[m.cols]();
+            n[i] = new int[m->cols];
         }
 
-        // Perform matrix multiplication
         for (int i = 0; i < rows; i++)
         {
-            for (int j = 0; j < m.cols; j++)
+
+            for (int j = 0; j < m->cols; j++)
             {
+                n[i][j] = 0;
                 for (int p = 0; p < cols; p++)
                 {
-                    n[i][j] += matrix[i][p] * m.matrix[p][j];
+                    n[i][j] += matrix[i][p] * m->matrix[p][j];
+		    
                 }
             }
         }
 
-        // Print the result
         cout << "Multiplication answer:\n";
         for (int i = 0; i < rows; i++)
         {
-            for (int j = 0; j < m.cols; j++)
+            for (int j = 0; j < m->cols; j++)
             {
                 cout << n[i][j] << " ";
             }
@@ -147,7 +140,6 @@ int main(int argc, char const *argv[])
 {
     Matrix m1(3, 2), m2(2, 3);
 
-    // Set values for matrix m1
     for (int i = 0; i < 3; i++)
     {
         for (int j = 0; j < 2; j++)
@@ -156,7 +148,6 @@ int main(int argc, char const *argv[])
         }
     }
 
-    // Set values for matrix m2
     for (int i = 0; i < 2; i++)
     {
         for (int j = 0; j < 3; j++)
@@ -169,7 +160,7 @@ int main(int argc, char const *argv[])
     m1.add(m2);
 
     // Perform multiplication
-    m1.multiply(m2);
+    m1.multiply(&m2);
 
     return 0;
 }
