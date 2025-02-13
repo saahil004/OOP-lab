@@ -1,0 +1,59 @@
+#include <iostream>
+using namespace std;
+#define PI 3.14
+
+
+class Account {
+    double balance;
+    
+    public:
+      Account(double bal) : balance(bal) {}
+      
+      double withdraw(double amount) {
+          if (amount > balance) {
+              cout << "Balance not sufficient.\n";
+              return -1;
+          }
+          balance -= amount;
+          cout << "Withdrawn: " << amount << endl;
+          return amount;
+      }
+      
+      int deposit(double amount) {
+          balance += amount;
+          cout << "Deposited: " << amount << endl;
+          return 1;
+      }
+      
+      void displayBalance() {
+          cout << "Current Balance: " << balance << endl;
+      }
+};
+
+int main(int argc, char *argv[]) {
+    int c = 0;
+    double am;
+    double bal;
+    cout << "Enter initial balance: ";
+    cin >> bal;
+    Account a(bal);
+    while (c != 4) {
+        cout << "Enter 1 to check balance.\nEnter 2 to withdraw.\nEnter 3 to deposit.\nEnter 4 to exit.\nChoice: ";
+        cin >> c;
+        switch (c) {
+            case 1:
+               a.displayBalance();
+               break;
+            case 2:
+               cout << "Enter amount to withdraw: ";
+               cin >> am;
+               a.withdraw(am);
+               break;
+            case 3:
+               cout << "Enter amount to be deposited: ";
+               cin >> am;
+               a.deposit(am);
+        }
+    }
+    return 0;
+}
