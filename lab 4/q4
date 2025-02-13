@@ -1,0 +1,78 @@
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+class Book {
+    string title, author, publisher;
+    int stock;
+    double price;
+    
+    public:
+    Book(string t, string a, string p, int s, double pr) : title(t), author(a), publisher(p), stock(s), price(pr) {}
+    
+    string getTitle() {
+        return title;
+    }
+    
+    int getQty() {
+        return stock;
+    }
+    
+    void setStock(int s) {
+        stock = s;
+    }
+};
+
+int main() {
+    vector<Book> Books;
+    int c = 0;
+    string t, a, p;
+    double pr;
+    int s;
+    while (c != 3) {
+        cout << "Enter 1 to add a book.\nEnter 2 to buy a book.\nEnter 3 to exit.\nChoice: ";
+        cin >> c;
+        switch (c) {
+            case 1:
+              cout << "Enter title: ";
+              cin >> t;
+              cout << "Enter author: ";
+              cin >> a;
+              cout << "Enter publisher: ";
+              cin >> p;
+              cout << "Enter price: ";
+              cin >> pr;
+              cout << "Enter quantity: ";
+              cin >> s;
+              Books.push_back(Book(t, a, p, s, pr));
+              break;
+            case 2:
+              cout << "Enter title to be found: ";
+              cin >> t;
+              int ind = -1;
+              for (int i = 0; i < Books.size(); i++) {
+                  if (t == Books[i].getTitle()) {
+                      ind = i;
+                      break;
+                  }
+              }
+              if (ind == -1) {
+                  cout << "Book not found.\n";
+                  break;
+              }
+              cout << "Enter quantity: ";
+              cin >> s;
+              if (s > Books[ind].getQty()) {
+                  cout << "Quantity not available.\n";
+                  break;
+              } else {
+                  Books[ind].setStock(Books[ind].getQty() - s);
+                  cout << "Purchase successful.\n";
+              }
+              break;
+              
+        }
+    }
+    return 0;
+}
