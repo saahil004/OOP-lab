@@ -1,0 +1,40 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Invoice {
+    string partNumber, partDescription;
+    int qty;
+    double price;
+    
+    public:
+       Invoice(string pn, string pd, int q, double p) : partNumber(pn), partDescription(pd), qty(q), price(p) {
+           if (price < 0) {
+               price = 0.0;
+           }
+           if (qty < 0) {
+               qty = 0;
+           }
+       }
+       
+       double getInvoiceAmount() {
+           return price * qty;
+       }
+};
+
+int main() {
+    string pn, pd;
+    int q;
+    double p;
+    cout << "Enter part name: ";
+    cin >> pn;
+    cout << "Enter part description: ";
+    cin >> pd;
+    cout << "Enter quantity: ";
+    cin >> q;
+    cout << "Enter price per item: ";
+    cin >> p;
+    Invoice i(pn, pd, q, p);
+    cout << "Total amount: " << i.getInvoiceAmount() << endl;
+    return 0;
+}
