@@ -1,0 +1,31 @@
+#include <iostream>
+using namespace std;
+#define PI 3.14
+
+
+class Circle {
+    float radius;
+    
+    public:
+      Circle(float r) : radius(r) {}
+      
+      float getArea() {
+          return PI * radius * radius;
+      }
+      
+      float getPerimeter() {
+          return 2 * PI * radius;
+      }
+};
+
+int main(int argc, char *argv[]) {
+    if (argc < 2) {
+        cout << "Argument missing.\n";
+        return 0;
+    }
+    Circle obj(stof(argv[1]));
+    cout << "The area is " << obj.getArea() << ".\n";
+    cout << "The perimeter is " << obj.getPerimeter() << ".\n";
+    
+    return 0;
+}
