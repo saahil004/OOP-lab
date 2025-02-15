@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+
 using namespace std;
 
 enum Type {
@@ -29,7 +30,8 @@ public:
 
         for (int i = 0; i < noOfItems; i++) {
             cout << "Enter item " << i + 1 << " name: ";
-            cin >> Menu[i].name;
+            cin >> ws;  
+            getline(cin, Menu[i].name);
 
             int typeInput;
             cout << "Enter item type (0 for FOOD, 1 for DRINK): ";
@@ -50,43 +52,129 @@ public:
         delete[] Orders;
     }
 
-    int addOrder(string name) {
+    void addOrder() {
         if (noOfOrders == maxOrders) {
             cout << "Max number of orders reached.\n";
-            return 0;
+            return;
         }
-        int ind = -1;
+        
+        string itemName;
+        cout << "Enter item name to order: ";
+        cin >> ws;
+        getline(cin, itemName);
+
         for (int i = 0; i < noOfItems; i++) {
-            if (name == Menu[i].name) {
-                ind = i;
-                break;
+            if (Menu[i].name == itemName) {
+                Orders[noOfOrders] = Menu[i];
+                noOfOrders++;
+                cout << "Order added: " << itemName << endl;
+                return;
             }
         }
-        if (ind == -1) {
-            cout << "Item not available.\n";
-            return 0;
-        }
 
-        Orders[noOfOrders] = Menu[ind];
-        noOfOrders++;
-        cout << "Order added: " << name << endl;
-        return 1;
+        cout << "Item not available.\n";
     }
 
-    void displayOrders() {
+    void fulfillOrder() {
+        if (noOfOrders == 0) {
+            cout << "No orders currently.\n";
+            return;
+        }
+        cout << "Order fulfilled: " << Orders[0].name << "\n";
+
+        for (int i = 1; i < noOfOrders; i++) {
+            Orders[i - 1] = Orders[i];
+        }
+        noOfOrders--;
+    }
+
+    void listOrders() {
+        if (noOfOrders == 0) {
+            cout << "No pending orders.\n";
+            return;
+        }
         cout << "Current Orders:\n";
-       
         for (int i = 0; i < noOfOrders; i++) {
             cout << Orders[i].name << " - $" << Orders[i].price << "\n";
         }
     }
+
+    void dueAmount() {
+        double total = 0;
+        for (int i = 0; i < noOfOrders; i++) {
+            total += Orders[i].price;
+        }
+        cout << "Total due amount: $" << total << "\n";
+    }
+
+    void showDrinksOnly() {
+        cout << "Drinks available:\n";
+        for (int i = 0; i < noOfItems; i++) {
+            if (Menu[i].type == DRINK) {
+                cout << Menu[i].name << " - $" << Menu[i].price << "\n";
+            }
+        }
+    }
+
+    void cheapestItem() {
+        if (noOfItems == 0) {
+            cout << "No items in the menu.\n";
+            return;
+        }
+
+        int minIndex = 0;
+        for (int i = 1; i < noOfItems; i++) {
+            if (Menu[i].price < Menu[minIndex].price) {
+                minIndex = i;
+            }
+        }
+
+        cout << "Cheapest item: " << Menu[minIndex].name << " - $" << Menu[minIndex].price << "\n";
+    }
 };
 
 int main() {
-    CoffeeShop shop("My Coffee Shop", 2, 5);
+    int numItems, maxOrders;
+    
+    cout << "Enter number of menu items: ";
+    cin >> numItems;
+    
+    cout << "Enter maximum number of orders: ";
+    cin >> maxOrders;
 
-    shop.addOrder("Latte");
-    shop.displayOrders();
+    CoffeeShop shop("My Coffee Shop", numItems, maxOrders);
+
+    int choice;
+    do {
+        cout << "\n1. Add Order\n2. Fulfill Order\n3. List Orders\n4. Show Drinks\n5. Show Cheapest Item\n6. Due Amount\n0. Exit\nEnter choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                shop.addOrder();
+                break;
+            case 2:
+                shop.fulfillOrder();
+                break;
+            case 3:
+                shop.listOrders();
+                break;
+            case 4:
+                shop.showDrinksOnly();
+                break;
+            case 5:
+                shop.cheapestItem();
+                break;
+            case 6:
+                shop.dueAmount();
+                break;
+            case 0:
+                cout << "Exiting program.\n";
+                break;
+            default:
+                cout << "Invalid choice, try again.\n";
+        }
+    } while (choice != 0);
 
     return 0;
 }
