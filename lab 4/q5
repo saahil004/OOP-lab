@@ -1,0 +1,92 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+enum Type {
+    FOOD = 0,
+    DRINK = 1
+};
+
+struct MenuItem {
+    string name;
+    Type type;
+    double price;
+};
+
+class CoffeeShop {
+    string name;
+    MenuItem *Menu;
+    int noOfItems;
+    MenuItem *Orders;
+    int noOfOrders;
+    int maxOrders;
+
+public:
+    CoffeeShop(string n, int ni, int mo) 
+        : name(n), noOfItems(ni), noOfOrders(0), maxOrders(mo) {
+        Menu = new MenuItem[noOfItems];
+        Orders = new MenuItem[maxOrders];
+
+        for (int i = 0; i < noOfItems; i++) {
+            cout << "Enter item " << i + 1 << " name: ";
+            cin >> Menu[i].name;
+
+            int typeInput;
+            cout << "Enter item type (0 for FOOD, 1 for DRINK): ";
+            cin >> typeInput;
+            while (typeInput != 0 && typeInput != 1) {
+                cout << "Invalid input! Enter 0 for FOOD, 1 for DRINK: ";
+                cin >> typeInput;
+            }
+            Menu[i].type = static_cast<Type>(typeInput);
+
+            cout << "Enter item " << i + 1 << " price: ";
+            cin >> Menu[i].price;
+        }
+    }
+
+    ~CoffeeShop() {
+        delete[] Menu;
+        delete[] Orders;
+    }
+
+    int addOrder(string name) {
+        if (noOfOrders == maxOrders) {
+            cout << "Max number of orders reached.\n";
+            return 0;
+        }
+        int ind = -1;
+        for (int i = 0; i < noOfItems; i++) {
+            if (name == Menu[i].name) {
+                ind = i;
+                break;
+            }
+        }
+        if (ind == -1) {
+            cout << "Item not available.\n";
+            return 0;
+        }
+
+        Orders[noOfOrders] = Menu[ind];
+        noOfOrders++;
+        cout << "Order added: " << name << endl;
+        return 1;
+    }
+
+    void displayOrders() {
+        cout << "Current Orders:\n";
+       
+        for (int i = 0; i < noOfOrders; i++) {
+            cout << Orders[i].name << " - $" << Orders[i].price << "\n";
+        }
+    }
+};
+
+int main() {
+    CoffeeShop shop("My Coffee Shop", 2, 5);
+
+    shop.addOrder("Latte");
+    shop.displayOrders();
+
+    return 0;
+}
