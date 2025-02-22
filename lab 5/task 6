@@ -1,0 +1,114 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+struct MenuItem {
+    string name;
+    double price;
+    string type; // "drink" or "food"
+};
+
+class CoffeeShop {
+public:
+    const string name;
+    MenuItem* menu;
+    string* orders;
+    int menuSize;
+    int orderCount;
+    int orderCapacity;
+
+    CoffeeShop(string shopName, MenuItem* shopMenu, int size)
+        : name(shopName), menu(shopMenu), menuSize(size), orderCount(0), orderCapacity(10) {
+        orders = new string[orderCapacity];
+    }
+
+    ~CoffeeShop() {
+        delete[] orders;
+    }
+
+    string addOrder(const string& itemName) {
+        for (int i = 0; i < menuSize; ++i) {
+            if (menu[i].name == itemName) {
+                if (orderCount == orderCapacity) {
+                    orderCapacity *= 2;
+                    string* newOrders = new string[orderCapacity];
+                    for (int j = 0; j < orderCount; ++j) {
+                        newOrders[j] = orders[j];
+                    }
+                    delete[] orders;
+                    orders = newOrders;
+                }
+                orders[orderCount++] = itemName;
+                return "Order added: " + itemName;
+            }
+        }
+        return "This item is currently unavailable!";
+    }
+
+    string fulfillOrder() {
+        if (orderCount > 0) {
+            string fulfilledItem = orders[0];
+            for (int i = 0; i < orderCount - 1; ++i) {
+                orders[i] = orders[i + 1];
+            }
+            --orderCount;
+            return "The " + fulfilledItem + " is ready!";
+        }
+        return "All orders have been fulfilled";
+    }
+
+    void listOrders() const {
+        for (int i = 0; i < orderCount; ++i) {
+            cout << orders[i] << endl;
+        }
+    }
+
+    double dueAmount() const {
+        double total = 0;
+        for (int i = 0; i < orderCount; ++i) {
+            for (int j = 0; j < menuSize; ++j) {
+                if (menu[j].name == orders[i]) {
+                    total += menu[j].price;
+                    break;
+                }
+            }
+        }
+        return total;
+    }
+
+    string cheapestItem() const {
+        if (menuSize == 0) return "No items available!";
+        MenuItem* cheapest = &menu[0];
+        for (int i = 1; i < menuSize; ++i) {
+            if (menu[i].price < cheapest->price) {
+                cheapest = &menu[i];
+            }
+        }
+        return cheapest->name;
+    }
+};
+
+int main() {
+    MenuItem menu[] = {
+        {"Latte", 3.5, "drink"},
+        {"Espresso", 2.5, "drink"},
+        {"Croissant", 2.0, "food"},
+        {"Muffin", 2.8, "food"}
+    };
+
+    CoffeeShop shop("Java Haven", menu, 4);
+
+    cout << shop.addOrder("Latte") << endl;
+    cout << shop.addOrder("Muffin") << endl;
+    cout << shop.addOrder("Burger") << endl;
+    
+    cout << "Due amount: $" << shop.dueAmount() << endl;
+    cout << "Cheapest item: " << shop.cheapestItem() << endl;
+    
+    cout << shop.fulfillOrder() << endl;
+    cout << shop.fulfillOrder() << endl;
+    cout << shop.fulfillOrder() << endl;
+
+    return 0;
+}
