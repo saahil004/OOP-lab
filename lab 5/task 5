@@ -1,0 +1,43 @@
+// Task 5: Write a C++ Program which consists of a class named car with attributes engine
+// horsepower, seating_capacity and no_of_speakers. You must change the values of the public
+// attributes but via the constant function.
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Car {
+public:
+    mutable string engine;
+    mutable int engine_horsepower;
+    mutable int seating_capacity;
+    mutable int no_of_speakers;
+
+    Car(string eng, int hp, int seats, int speakers)
+        : engine(eng), engine_horsepower(hp), seating_capacity(seats), no_of_speakers(speakers) {}
+
+    void display() const {
+        cout << "Engine : " << engine << "\n";
+        cout << "Engine Horsepower: " << engine_horsepower << "\n";
+        cout << "Seating Capacity: " << seating_capacity << "\n";
+        cout << "Number of Speakers: " << no_of_speakers << "\n";
+    }
+
+    void modifyCar(string eng, int hp, int seats, int speakers) const {
+        engine = eng;
+        engine_horsepower = hp;
+        seating_capacity = seats;
+        no_of_speakers = speakers;
+    }
+};
+
+int main() {
+    Car myCar("Engine 1", 200, 5, 4);
+    cout << "Before modification:" << endl;
+    myCar.display();
+
+    myCar.modifyCar("Engine 2", 250, 7, 6);
+    cout << "\nAfter modification:" << endl;
+    myCar.display();
+
+    return 0;
+}
