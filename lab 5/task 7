@@ -1,0 +1,26 @@
+// Task 7: Write a program that uses a constant variable but is not assigned a value instead it
+// declared in the class Student. Your task is to assign the constant value via a function. Note the
+// value must be taken at run-time. Also you can take a student class example of this approach
+// where the const variable is the student’s roll_no.
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Student {
+  private:
+    string name;
+    const string rollNumber;
+  public:
+    Student(string n, string r) : name(n), rollNumber(r) {}
+    
+    void printDetails() const {
+        cout << "Name: " << name << endl;
+        cout << "Roll Number: " << rollNumber << endl;
+    }
+};
+
+int main() {
+    Student s("Saahil", "24K-0570");
+    s.printDetails();
+    return 0;
+}
