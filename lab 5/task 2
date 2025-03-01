@@ -1,0 +1,59 @@
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+class Car {
+    private:
+      string name, ID;
+
+    public:
+      Car(string n, string id) : name(n), ID(id) {}
+      void display() const {
+        cout << "Name: " << name << "\nID: " << ID << endl;
+      }  
+      ~Car() {cout << "Car " << name << " deleted.\n";}
+};
+
+class Garage {
+    private:
+      vector<Car*> cars;
+    
+    public:
+      bool parkCar(Car* car) {
+        cars.push_back(car);
+        return true;
+      }  
+
+      void listCars() {
+        for (int i = 0; i < cars.size(); i++)
+        {
+             cars[i]->display();
+        }
+        
+      }
+
+      ~Garage() {
+
+          //undefined behavior
+        // for (int i = 0; i < cars.size(); i++)
+        // {
+        //     delete cars[i];
+        // }
+        
+        cout << "Garage deleted.\n";
+    }
+};
+
+int main() {
+    Car c1 ("Corolla", "1");
+    Car c2 ("Civic", "2");
+    Car c3 ("City", "3");
+    Car c4 ("Revo", "4");
+    Garage g1;
+    g1.parkCar(&c1);
+    g1.parkCar(&c2);
+    g1.parkCar(&c3);
+    g1.parkCar(&c4);
+    g1.listCars();
+}
