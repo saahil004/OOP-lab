@@ -1,0 +1,80 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+class Book {
+public:
+    string title, author, isbn;
+    Book(string t, string a, string i) : title(t), author(a), isbn(i) {}
+    void display() const {
+        cout << "Title: " << title << ", Author: " << author << ", ISBN: " << isbn << endl;
+    }
+};
+
+class Catalog {
+private:
+    static vector<string> catalogISBNs;
+public:
+    static void addBookToCatalog(const string& isbn) { catalogISBNs.push_back(isbn); }
+    static void removeBookFromCatalog(const string& isbn) {
+        for (auto it = catalogISBNs.begin(); it != catalogISBNs.end(); ++it)
+            if (*it == isbn) { catalogISBNs.erase(it); return; }
+    }
+    static bool findBook(const string& isbn) {
+        for (const auto& id : catalogISBNs) if (id == isbn) return true;
+        return false;
+    }
+    static void displayCatalog() {
+        cout << "Catalog:\n";
+        for (const auto& id : catalogISBNs) cout << "ISBN: " << id << endl;
+    }
+};
+vector<string> Catalog::catalogISBNs;
+
+class Library {
+private:
+    string name;
+    Catalog catalog;
+    vector<Book> books;
+public:
+    Library(string n) : name(n) {}
+    void addBook(const Book& book) { books.push_back(book); Catalog::addBookToCatalog(book.isbn); }
+    void removeBook(const string& isbn) {
+        for (auto it = books.begin(); it != books.end(); ++it)
+            if (it->isbn == isbn) { Catalog::removeBookFromCatalog(isbn); books.erase(it); return; }
+        cout << "Book not found.\n";
+    }
+    void findBookInCatalog(const string& isbn) {
+        cout << (Catalog::findBook(isbn) ? "Book found.\n" : "Book not found.\n");
+    }
+    void displayBooks() const {
+        cout << "Books in " << name << ":\n";
+        for (const auto& book : books) book.display();
+    }
+};
+
+int main() {
+    Library lib("City Library");
+
+    Book b1("1984", "George Orwell", "12345");
+    Book b2("Brave New World", "Aldous Huxley", "67890");
+    Book b3("The Great Gatsby", "F. Scott Fitzgerald", "54321");
+
+    lib.addBook(b1);
+    lib.addBook(b2);
+    lib.addBook(b3);
+
+    lib.displayBooks();
+    Catalog::displayCatalog();
+
+    lib.findBookInCatalog("67890");
+
+    cout << "\nAfter removal:\n";
+    lib.removeBook("12345");
+    lib.displayBooks();
+    Catalog::displayCatalog();
+
+    return 0;
+}
