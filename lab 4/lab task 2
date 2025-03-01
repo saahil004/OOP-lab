@@ -1,0 +1,178 @@
+#include <iostream>
+#include <math.h>
+#include <stdlib.h>
+#include <time.h>
+using namespace std;
+
+class Polynomial {
+    private:
+       int degree;
+       double *coefficients;
+
+    public:
+       void display();
+
+       Polynomial() : degree(0), coefficients(new double[1]) {
+        coefficients[0] = 0;
+       }
+
+       Polynomial(int d) : degree(d) {
+        coefficients = new double[degree+1];
+        srand(time(NULL));
+        for (int i = 0; i <= degree; i++)
+        {
+            coefficients[i] = static_cast<double>(rand() % 10);
+        }
+       } 
+
+       Polynomial(const Polynomial& other) {
+        degree = other.degree;
+        coefficients = new double[degree+1];
+        for (int i = 0; i <= degree; i++)
+        {
+            coefficients[i] = other.coefficients[i];
+        }
+       }
+
+       Polynomial& operator=(const Polynomial& other) {
+        if (this == &other)
+        {
+            return *this;
+        }
+        
+        if (coefficients != NULL)
+        {
+            delete[] coefficients;
+        }
+        degree = other.degree;
+        coefficients = new double[degree+1];
+        for (int i = 0; i <= degree; i++)
+        {
+            coefficients[i] = other.coefficients[i];
+        }
+        return *this;
+       }
+
+       Polynomial(Polynomial&& other) noexcept {
+        degree = other.degree;
+        other.degree = 0;
+        coefficients = other.coefficients;
+        other.coefficients = new double[1];
+        other.coefficients[0] = 0;
+       }
+       //move assignment operator 
+       Polynomial& operator=(Polynomial&& other) noexcept {
+        if (this == &other)
+        {
+            return *this;
+        }
+        
+        degree = other.degree;
+        other.degree = 0;
+        coefficients = other.coefficients;
+        other.coefficients = new double[1];
+        other.coefficients[0] = 0;
+        return *this;
+       }
+
+       int getDegree() const {
+        return degree;
+       }
+        
+       double evaluate(int x) {
+        double ans = 0;
+        for (int i = 0; i <= degree; i++)
+        {
+            ans += coefficients[i] * pow(x, i);
+        }
+        return ans;
+       } 
+       
+
+       Polynomial add(const Polynomial& other) {
+        if (this->getDegree() >= other.getDegree())
+        {
+            Polynomial p1(this->getDegree());
+            for (int i = 0; i <= other.degree; i++)
+            {
+                p1.coefficients[i] = this->coefficients[i] + other.coefficients[i];
+            }
+            for (int i = other.degree+1; i <= this->degree; i++)
+            {
+                p1.coefficients[i] = this->coefficients[i];
+            }
+            return p1;
+            
+        } else {
+            Polynomial p1(other.getDegree());
+            for (int i = 0; i <= this->degree; i++)
+            {
+                p1.coefficients[i] = this->coefficients[i] + other.coefficients[i];
+            }
+            for (int i = this->degree+1; i <= other.degree; i++)
+            {
+                p1.coefficients[i] = other.coefficients[i];
+            }
+            return p1;
+        }
+       }
+       
+       Polynomial multiply(const Polynomial& other) {
+        Polynomial p1(this->degree + other.degree);
+        for (int i = 0; i <= p1.degree; i++)
+        {
+            p1.coefficients[i] = 0;
+        }
+        for (int i = 0; i <= this->degree; i++)
+        {
+            for (int j = 0; j <= other.degree; j++)
+            {
+                p1.coefficients[i+j] += this->coefficients[i] * other.coefficients[j];
+            }
+            
+        }
+        return p1;
+       }
+
+       ~Polynomial() {
+        delete[] coefficients;
+       }
+};
+
+void Polynomial :: display() {
+    if (degree == 0 && coefficients[0] == 0)
+    {
+        cout << "empty.\n";
+    }
+    for (int i = 0; i <= degree; i++)
+    {
+        cout << coefficients[i] << "x^" << i << " ";
+    }
+    cout << endl;
+    
+}
+
+int main(int argc, char const *argv[])
+{
+    Polynomial p1(2), p3(3);
+    cout << "P1: ";
+    p1.display();
+    cout << "p1 at x = 1:\n";
+    cout << p1.evaluate(1) << endl;
+    cout << "P3: ";
+    p3.display();
+    cout << "Adding p1 to p3 ans: ";
+    static_cast<Polynomial>(p1.add(p3)).display();
+    cout << "Multiplying p1 to p3: ";
+    static_cast<Polynomial>(p3.multiply(p1)).display();
+    Polynomial p2(p1);
+    p2.display();
+    Polynomial p4 = move(p3);
+    p4.display();
+    p4 = p1;
+    p4.display();
+    p4 = move(p2);
+    p4.display();
+    p2.display();
+    return 0;
+}
