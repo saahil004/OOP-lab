@@ -3,9 +3,10 @@
 using namespace std;
 
 class BankAccount {
-    public:
+    protected:  
       string accountNumber;
       double balance;
+    public:
       virtual void display() = 0; //abstraction so that no default bank account cane be created.
       virtual bool deposit(double a) = 0;
       virtual bool withdraw(double a) = 0;
@@ -46,9 +47,40 @@ class SavingsAccount : public BankAccount {
       }
 };
 
+class CheckingAccount : public BankAccount {
+    private:
+      double overdraftLimit;
+      
+    public:
+      CheckingAccount(string an, double bal, double odl) : overdraftLimit(odl) {
+          accountNumber = an;
+          balance = bal;
+      }
+      
+      void display() override {
+          cout << "Account number: " << accountNumber << "\nBalance: " << balance << "\nOverdraft Limit: " << overdraftLimit << endl;
+      }
+      
+      bool withdraw(double a) override {
+          if (a <= balance + overdraftLimit) {
+              balance -= a;
+              return true;
+          }
+          return false;
+      }
+      
+      bool deposit(double a) override {
+          if (a >= 0) {
+              balance += a;
+              return true;
+          }
+          return false;
+      }
+};
+
 int main() {
     SavingsAccount s1("1", 12000, 2.2);
     s1.display();
+    // cout << s1.accountNumber;
     return 0;
 }
-
