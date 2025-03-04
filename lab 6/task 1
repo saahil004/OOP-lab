@@ -1,0 +1,54 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class BankAccount {
+    public:
+      string accountNumber;
+      double balance;
+      virtual void display() = 0; //abstraction so that no default bank account cane be created.
+      virtual bool deposit(double a) = 0;
+      virtual bool withdraw(double a) = 0;
+};
+
+class SavingsAccount : public BankAccount {
+    private:
+      double monthlyInterest;
+    
+    public:
+      SavingsAccount(string an, double bal, double m) : monthlyInterest(m) {
+          balance = bal;
+          accountNumber = an;
+      }
+      
+      void display() override {
+          cout << "Account number: " << accountNumber << "\nBalance: " << balance << "\nMonthly Interest: " << monthlyInterest << endl;
+      }
+      
+      bool withdraw(double a) override {
+          if (a <= balance) {
+              balance -= a;
+              return true;
+          }
+          return false;
+      }
+      
+      bool deposit(double a) override {
+          if (a >= 0) {
+              balance += a;
+              return true;
+          }
+          return false;
+      }
+      
+      void applyMonthlyInterest() {
+          balance += balance * (monthlyInterest / 100);
+      }
+};
+
+int main() {
+    SavingsAccount s1("1", 12000, 2.2);
+    s1.display();
+    return 0;
+}
+
