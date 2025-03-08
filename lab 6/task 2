@@ -1,0 +1,91 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class MediaFile {
+    protected:
+     string path;
+     float size;
+    
+    public:
+     MediaFile() {
+        cout << "Media file constructed.\n";
+     }
+
+     virtual void play() {
+        cout << "Media file is playing.\n";
+     } 
+
+     virtual void stop() {
+         cout << "Media file stopped.\n";
+     } 
+};
+
+class VisualMedia : virtual public MediaFile {
+    protected:
+      double pictureRes;
+
+    public: 
+      VisualMedia() {
+        cout << "Visual media constructed.\n";
+      }
+      
+    void play() override {
+        cout << "Visual media is playing.\n";
+     } 
+
+    void stop() override {
+         cout << "Visual media stopped.\n";
+     }
+};
+
+class AudioMedia : virtual public MediaFile {
+    protected:
+      double soundRes;
+
+    public: 
+    AudioMedia() {
+        cout << "Audio media constructed.\n";
+      }
+      
+    void play() override {
+        cout << "Audio media is playing.\n";
+     } 
+
+    void stop() override {
+         cout << "Audio media stopped.\n";
+     }
+};
+
+class VideoFile : public VisualMedia, public AudioMedia {
+    public:
+      VideoFile() {
+        cout << "Video file constructed.\n";
+      }
+      string getPath() {return path;} //ambiguity solved by virtual inheritance
+
+      void play() override {
+        cout << "Video is playing.\n";
+     } 
+
+    void stop() override {
+         cout << "Video stopped.\n";
+     }
+};
+
+int main() {
+    MediaFile* v1 = new VideoFile();
+    // v1.play(); //gives an error due to ambiguity before overriding
+    v1->play();
+    v1->stop();
+    MediaFile* v2 = new VisualMedia();
+    // v1.play(); //gives an error due to ambiguity before overriding
+    v2->play();
+    v2->stop();
+    MediaFile* v3 = new AudioMedia();
+    // v1.play(); //gives an error due to ambiguity before overriding
+    v3->play();
+    v3->stop();
+
+    return 0;
+}
