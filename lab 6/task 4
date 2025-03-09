@@ -44,18 +44,23 @@ int main() {
     books.push_back(new Narrative("Narrative 2", "Author 4"));
     books.push_back(new Novel("Novel 3", "Author 5"));
     cout << "Novels:\n";
-    for (auto& book : books) {
+    for (const auto& book : books) {
         if (auto* novel = dynamic_cast<Novel*>(book))
         {
             novel->display();
         }
     }
     cout << "\nNarratives:\n";
-    for (auto& book : books) {
+    for (const auto& book : books) {
         if (auto* narrative = dynamic_cast<Narrative*>(book))
         {
             narrative->display();
         }
     }
+    for (const auto& book : books)
+    {
+        delete book;
+    }
+    
     return 0;
 }
