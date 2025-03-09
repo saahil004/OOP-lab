@@ -1,0 +1,61 @@
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+class Book {
+    protected:
+      string genre;
+    public:
+      virtual void display() = 0;
+      virtual ~Book() {}  
+};
+
+class Novel : public Book {
+    private:
+      string name, author;
+    public:
+      Novel(string n, string a) : name(n), author(a) {
+        genre = "novel";
+      }  
+
+      void display() override {
+        cout << "Name: " << name << "\nAuthor: " << author << "\nGenre: " << genre << endl;
+      }
+    };
+    
+    class Narrative : public Book {
+        private:
+        string name, author;
+        public:
+        Narrative(string n, string a) : name(n), author(a) {
+            genre = "narrative";
+        }    
+        void display() override {
+          cout << "Name: " << name << "\nAuthor: " << author << "\nGenre: " << genre << endl;
+        }
+};
+
+int main() {
+    vector<Book*> books;
+    books.push_back(new Novel("Novel 1", "Author 1"));
+    books.push_back(new Narrative("Narrative 1", "Author 2"));
+    books.push_back(new Novel("Novel 2", "Author 3"));
+    books.push_back(new Narrative("Narrative 2", "Author 4"));
+    books.push_back(new Novel("Novel 3", "Author 5"));
+    cout << "Novels:\n";
+    for (auto& book : books) {
+        if (auto* novel = dynamic_cast<Novel*>(book))
+        {
+            novel->display();
+        }
+    }
+    cout << "\nNarratives:\n";
+    for (auto& book : books) {
+        if (auto* narrative = dynamic_cast<Narrative*>(book))
+        {
+            narrative->display();
+        }
+    }
+    return 0;
+}
