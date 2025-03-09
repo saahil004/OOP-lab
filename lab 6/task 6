@@ -1,0 +1,69 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Student {
+protected:
+    string name;
+    int rollNumber;
+    string department;
+
+public:
+    Student(string n, int r, string d) : name(n), rollNumber(r), department(d) {}
+
+    void displayStudentInfo() const {
+        cout << "Student Details:\n";
+        cout << "Name: " << name << endl;
+        cout << "Roll Number: " << rollNumber << endl;
+        cout << "Department: " << department << endl;
+    }
+};
+
+class Marks : public Student {
+protected:
+    int subjects[3]; //assuming there are 3 subjects
+
+public:
+    Marks(string n, int r, string d, int sub1, int sub2, int sub3) 
+        : Student(n, r, d) {
+        subjects[0] = sub1;
+        subjects[1] = sub2;
+        subjects[2] = sub3;
+    }
+
+    void displayMarks() const {
+        cout << "\nMarks Obtained:\n";
+        cout << "Subject 1: " << subjects[0] << endl;
+        cout << "Subject 2: " << subjects[1] << endl;
+        cout << "Subject 3: " << subjects[2] << endl;
+    }
+
+    int getTotalMarks() const {
+        return subjects[0] + subjects[1] + subjects[2];
+    }
+};
+
+class Result : public Marks {
+public:
+    Result(string n, int r, string d, int sub1, int sub2, int sub3) 
+        : Marks(n, r, d, sub1, sub2, sub3) {}
+
+    void displayResult() const {
+        int totalMarks = getTotalMarks();
+        float averageMarks = totalMarks / 3.0;
+
+        cout << "\nResult:\n";
+        cout << "Total Marks: " << totalMarks << endl;
+        cout << "Average Marks: " << averageMarks << endl;
+    }
+};
+
+int main() {
+    Result student1("John Doe", 101, "Computer Science", 85, 90, 78);
+
+    student1.displayStudentInfo();
+    student1.displayMarks();
+    student1.displayResult();
+
+    return 0;
+}
