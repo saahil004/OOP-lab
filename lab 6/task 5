@@ -1,0 +1,103 @@
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+enum Fuel
+{
+    DIESEL,
+    PETROL
+};
+
+class Vehicle
+{
+protected:
+    double price;
+
+public:
+    virtual void display() const = 0;
+    virtual ~Vehicle() {}
+};
+
+class Car : public Vehicle
+{
+protected:
+    int seatingCapacity, noOfDoors;
+    Fuel fuel;
+};
+
+class Motorcycle : public Vehicle
+{
+protected:
+    int nCylinders, nWheels, nGears;
+};
+
+class Audi : public Car
+{
+private:
+    string model;
+
+public:
+    Audi(double p, int s, int d, Fuel f, string m) : model(m)
+    {
+        price = p;
+        seatingCapacity = s;
+        noOfDoors = d;
+        fuel = f;
+    }
+
+    void display() const override
+    {
+        cout << "Audi details:\n";
+        cout << "Model: " << model << endl;
+        cout << "Price: " << price << endl;
+        cout << "Capacity: " << seatingCapacity << endl;
+        cout << "Number of doors: " << noOfDoors << endl;
+        cout << "Fuel type: ";
+        cout << ((fuel == DIESEL) ? "Diesel\n" : "Petrol\n") << endl;
+    }
+};
+
+class Yamaha : public Motorcycle
+{
+private:
+    string make;
+
+public:
+    Yamaha(double p, int c, int w, int g, string m) : make(m)
+    {
+        price = p;
+        nCylinders = c;
+        nWheels = w;
+        nGears = g;
+    }
+    void display() const override
+    {
+        cout << "Yamaha details:\n";
+        cout << "Make: " << make << endl;
+        cout << "Price: " << price << endl;
+        cout << "No of cylinders: " << nCylinders << endl;
+        cout << "No of wheels: " << nWheels << endl;
+        cout << "No of gears: " << nGears << endl;
+    }
+};
+
+int main() {
+    vector<Vehicle*> vehicles;
+
+    vehicles.push_back(new Audi(50000, 5, 4, PETROL, "A4"));
+    vehicles.push_back(new Audi(70000, 4, 2, DIESEL, "R8"));
+    vehicles.push_back(new Yamaha(15000, 2, 2, 6, "YZF-R1"));
+    vehicles.push_back(new Yamaha(10000, 1, 2, 5, "MT-07"));
+
+    cout << "Vehicle List:\n";
+    for (const auto& vehicle : vehicles) {
+        vehicle->display();
+    }
+
+    for (const auto& vehicle : vehicles) {
+        delete vehicle;
+    }
+
+    return 0;
+}
