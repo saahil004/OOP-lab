@@ -1,0 +1,124 @@
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+class Media {
+   protected:
+      string title;
+      string publicationDate;
+      int uniqueID;
+      string publisher;
+      friend void find(const vector<Media*>& media, const string& t); //title
+      friend void find(const vector<Media*>& media, const int& ID); //unique ID
+      
+    public:
+         Media(string t, string pd, int id, string p) : title(t), publicationDate(pd), uniqueID(id), publisher(p) {}
+       
+        virtual void display() {
+             cout << "Media details\n" << "Title: " << title << "\nPublication Date:" << publicationDate << "\nUnique ID: " << uniqueID << "\nPublisher: " << publisher << endl;
+        }
+
+
+        void checkOut() {
+            cout << "Borrowing selected media.\n";
+        }
+
+       void returnItem() {
+             cout << "Media returned.\n";
+      }
+};
+
+class Book : public Media {
+    private:
+      string author, ISBN;
+      int noOfPages;
+      
+    public:
+      Book(string t, string pd, int id, string p, string a, string i, int n) : Media(t, pd, id, p), author(a), ISBN(i), noOfPages(n) {}
+      
+      void display() override {
+             cout << "Book details\n" << "Title: " << title << "\nPublication Date:" << publicationDate << "\nUnique ID: " << uniqueID << "\nPublisher: " << publisher << "\nAuthor: " << author << "\nISBN: " << ISBN << "\nNumber of pages: "<< noOfPages << endl;
+        }
+};
+
+class DVD : public Media {
+    private:
+      string director;
+      string duration;
+      float rating;
+      
+    public:
+      DVD(string t, string pd, int id, string p, string d, string du, float r) : Media(t, pd, id, p), director(d), duration(du), rating(r) {}
+      
+      void display() override {
+             cout << "DVD details\n" << "Title: " << title << "\nPublication Date:" << publicationDate << "\nUnique ID: " << uniqueID << "\nPublisher: " << publisher << "\nDirector: " << director << "\nDuration: " << duration << "\nRating: "<< rating << endl;
+        }
+};
+
+class CD : public Media {
+    private:
+      string genre, artist;
+      int noOfTracks;
+      
+    public:
+      CD(string t, string pd, int id, string p, string g, string a, int n) : Media(t, pd, id, p), genre(g), artist(a), noOfTracks(n) {}
+      
+      void display() override {
+             cout << "CD details\n" << "Title: " << title << "\nPublication Date:" << publicationDate << "\nUnique ID: " << uniqueID << "\nPublisher: " << publisher << "\nGenre: " << genre << "\nArtist: " << artist << "\nNumber of tracks: "<< noOfTracks << endl;
+        }
+};
+
+//global friend functions for function overloading
+void find(const vector<Media*>& media, const string& t) {
+    // int ind = -1;
+    for (const auto& m : media) {
+        if (m->title == t) {
+            cout << "Found.\n";
+            m->display();
+            cout << endl;
+            return;
+        }
+    }
+    cout << "Title " << t << " not found.\n";
+} 
+void find(const vector<Media*>& media, const int& ID) {
+    for (const auto& m : media) {
+        if (m->uniqueID == ID) {
+            cout << "Found.\n";
+            m->display();
+            cout << endl;
+            return;
+        }
+    }
+    cout << "ID " << ID << " not found.\n";
+}
+
+int main() {
+    vector<Media*> media;  // Store pointers to Media objects
+
+    // Adding objects of different types to the vector
+    media.push_back(new Book("The Great Gatsby", "1925-04-10", 1, "Scribner", "F. Scott Fitzgerald", "9780743273565", 218));
+    media.push_back(new DVD("Inception", "2010-07-16", 2, "Warner Bros", "Christopher Nolan", "148 minutes", 8.8f));
+    media.push_back(new CD("Abbey Road", "1969-09-26", 3, "Apple Records", "Rock", "The Beatles", 17));
+
+    // Displaying the details of each media item
+    for (auto item : media) {
+        item->display();
+        cout << endl;
+    }
+    cout << "Finding ID 445(doesnt exist)\n";
+    find(media, 445);
+    cout << "Finding existing media using ID: \n";
+    find(media, 2);
+    
+    cout << "Finding using title:\n";
+    find(media, "Abbey Road");
+
+    // Cleanup: Deleting dynamically allocated memory
+    for (auto item : media) {
+        delete item;
+    }
+
+    return 0;
+}
