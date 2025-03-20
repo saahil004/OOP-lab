@@ -1,0 +1,111 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+class Course;
+
+class Person {
+protected:
+    string name, ID, address, phoneNumber, email;
+public:
+    Person(string n, string id, string addr, string phone, string em) : name(n), ID(id), address(addr), phoneNumber(phone), email(em) {}
+    virtual void displayInfo() {
+        cout << "Name: " << name << "\nID: " << ID << "\nAddress: " << address << "\nPhone: " << phoneNumber << "\nEmail: " << email << endl;
+    }
+    virtual void updateInfo() {
+        int choice;
+        cout << "Update Information:\n1. Name\n2. Address\n3. Phone\n4. Email\nChoice: ";
+        cin >> choice;
+        cin.ignore();
+        switch (choice) {
+            case 1: getline(cin, name); break;
+            case 2: getline(cin, address); break;
+            case 3: getline(cin, phoneNumber); break;
+            case 4: getline(cin, email); break;
+            default: cout << "Invalid choice!\n";
+        }
+    }
+    virtual ~Person() {}
+};
+
+class Student : public Person {
+private:
+    vector<Course*> coursesEnrolled;
+    double GPA;
+    int enrollmentYear;
+    friend class Course;
+public:
+    Student(string n, string id, string addr, string phone, string em, int year, double gpa) : Person(n, id, addr, phone, em), enrollmentYear(year), GPA(gpa) {}
+    void enrollInCourse(Course* course);
+    void displayInfo() override {
+        Person::displayInfo();
+        cout << "Enrollment Year: " << enrollmentYear << "\nGPA: " << GPA << "\nCourses Enrolled: " << coursesEnrolled.size() << endl;
+    }
+};
+
+class Professor : public Person {
+private:
+    string department;
+    vector<Course*> coursesTaught;
+    double salary;
+public:
+    Professor(string n, string id, string addr, string phone, string em, string dept, double sal) : Person(n, id, addr, phone, em), department(dept), salary(sal) {}
+    void displayInfo() override {
+        Person::displayInfo();
+        cout << "Department: " << department << "\nSalary: $" << salary << "\nCourses Taught: " << coursesTaught.size() << endl;
+    }
+};
+
+class Staff : public Person {
+private:
+    string department, position;
+    double salary;
+public:
+    Staff(string n, string id, string addr, string phone, string em, string dept, string pos, double sal) : Person(n, id, addr, phone, em), department(dept), position(pos), salary(sal) {}
+    void displayInfo() override {
+        Person::displayInfo();
+        cout << "Department: " << department << "\nPosition: " << position << "\nSalary: $" << salary << endl;
+    }
+};
+
+class Course {
+private:
+    string courseID, courseName, instructor, schedule;
+    int credits;
+    vector<Student*> enrolledStudents;
+public:
+    Course(string id, string name, string instr, string sched, int cred) : courseID(id), courseName(name), instructor(instr), schedule(sched), credits(cred) {}
+    void registerStudent(Student* student) {
+        enrolledStudents.push_back(student);
+        cout << student->ID << " enrolled in " << courseName << endl;
+    }
+    void calculateGrades(Student* student) {
+        cout << "Calculating grades for " << student->ID << " in " << courseName << endl;
+    }
+    void displayCourseInfo() {
+        cout << "Course ID: " << courseID << "\nCourse Name: " << courseName << "\nInstructor: " << instructor << "\nSchedule: " << schedule << "\nCredits: " << credits << "\nEnrolled Students: " << enrolledStudents.size() << endl;
+    }
+};
+
+void Student::enrollInCourse(Course* course) {
+    coursesEnrolled.push_back(course);
+    course->registerStudent(this);
+}
+
+int main() {
+    Student s1("Alice Johnson", "S1234", "123 Main St", "555-1234", "alice@example.com", 2023, 3.8);
+    Professor p1("Dr. Smith", "P5678", "456 University Ave", "555-5678", "smith@university.com", "Computer Science", 85000);
+    Staff staff1("John Doe", "ST7890", "789 Office St", "555-7890", "johndoe@university.com", "Admin", "HR Manager", 50000);
+    Course c1("CS101", "Introduction to C++", "Dr. Smith", "Mon/Wed 10AM", 3);
+    s1.enrollInCourse(&c1);
+    cout << "\n--- Student Info ---\n";
+    s1.displayInfo();
+    cout << "\n--- Professor Info ---\n";
+    p1.displayInfo();
+    cout << "\n--- Staff Info ---\n";
+    staff1.displayInfo();
+    cout << "\n--- Course Info ---\n";
+    c1.displayCourseInfo();
+    return 0;
+}
