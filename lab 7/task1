@@ -1,0 +1,198 @@
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+class Transaction {
+    private: 
+       string action;
+       double amount;
+
+    public:
+       Transaction(string a, double b) : action(a), amount(b) {}
+
+       void display() const {
+        cout << "Transaction | " << action << " | " << amount << endl;
+       }   
+};
+
+class Account {
+    protected:
+       string accNumber;
+       double balance;
+       string accHolderName;
+       string accType;
+       vector<Transaction> transactions;
+
+    public:
+       Account(string an, double b, string hn) : accNumber(an), balance(b), accHolderName(hn), accType("") {}
+       
+       virtual bool deposit(double b) {
+          if (b > 0)
+          {
+            balance += b;
+            transactions.push_back(Transaction("Deposit", b));
+            return true;
+          }
+          return false;
+       }
+
+       virtual bool withdraw(double b) {
+          if (b <= balance && b > 0)
+          {
+            balance -= b;
+            transactions.push_back(Transaction("Withdraw", b));
+            return true;
+          }
+          return false;
+       }
+       
+       virtual double calculateInterest() {
+        return balance * 0.1; //10% interest by default
+       }
+       
+       virtual void printStatement() {
+            cout << "Transactions:\n";
+            for (const auto& t : transactions)
+            {
+                t.display();
+            }
+            
+       }
+
+       virtual void getAccountInfo() {
+        cout << "Account details:\n";
+        cout << "Account Number:" << accNumber << "\n";
+        cout << "Account holder: " << accHolderName << "\n";
+        cout << "Account Balance: " << balance << "\n";
+
+       }
+
+};
+
+class SavingsAccount : public Account {
+   private: 
+      double interestRate;
+      double minimumBalance;
+
+   public:
+      SavingsAccount(string an, double b, string hn, double ir, double mb=0) : Account(an, b, hn), interestRate(ir), minimumBalance(mb) {}
+      
+      double calculateInterest() override {
+         return balance * interestRate / 100;
+      }
+
+      bool withdraw(double b) override {
+         if (b <= balance - minimumBalance && b > 0)
+         {
+           balance -= b;
+           transactions.push_back(Transaction("Withdraw", b));
+           return true;
+         }
+         return false;
+      }
+      
+      void printStatement() override {
+         cout << "Transactions for saving account:\n";
+         for (const auto& t : transactions)
+         {
+             t.display();
+         }
+         
+    }
+
+    void getAccountInfo() override {
+     cout << "Savings account details:\n";
+     cout << "Account Number:" << accNumber << "\n";
+     cout << "Account holder: " << accHolderName << "\n";
+     cout << "Account Balance: " << balance << "\n";
+     cout << "Account Interest rate: " << interestRate << "\n";
+
+    }
+      
+};
+
+class FixedDepositAccount : public Account {
+   private: 
+      string maturityDate;
+      const double fixedInterest;
+
+   public:
+      FixedDepositAccount(string an, double b, string hn, string md, double fi) : Account(an, b, hn), maturityDate(md), fixedInterest(fi) {}
+      
+      double calculateInterest() override {
+         return balance * fixedInterest / 100;
+      }
+
+      void printStatement() override {
+         cout << "Transactions for fixed deposit account:\n";
+         for (const auto& t : transactions)
+         {
+             t.display();
+         }
+         
+    }
+
+    void getAccountInfo() override {
+     cout << "Fixed deposit account details:\n";
+     cout << "Account Number:" << accNumber << "\n";
+     cout << "Account holder: " << accHolderName << "\n";
+     cout << "Account Balance: " << balance << "\n";
+     cout << "Account Interest rate(fixed): " << fixedInterest << "\n";
+
+    }
+      
+};
+
+class CheckingAccount : public Account {
+  
+   //same as the class Account by default
+  public:
+
+  CheckingAccount(string an, double b, string hn) : Account(an, b, hn) {}
+
+   void printStatement() override {
+      cout << "Transactions for checking account:\n";
+      for (const auto& t : transactions)
+      {
+          t.display();
+      }
+      
+ }
+
+ void getAccountInfo() override {
+  cout << "Checking account details:\n";
+  cout << "Account Number:" << accNumber << "\n";
+  cout << "Account holder: " << accHolderName << "\n";
+  cout << "Account Balance: " << balance << "\n";
+//   cout << "Account Interest rate: " << interestRate << "\n";
+
+ }
+};
+
+
+int main() {
+   vector<Account*> accounts;
+   
+   // Create dynamic accounts
+   accounts.push_back(new SavingsAccount("SA123", 1000, "Alice", 5, 200));
+   accounts.push_back(new FixedDepositAccount("FDA456", 5000, "Bob", "2026-12-31", 7));
+   accounts.push_back(new CheckingAccount("CA789", 2000, "Charlie"));
+   
+   // Perform transactions using polymorphism
+   for (auto acc : accounts) {
+       acc->deposit(500);
+       acc->withdraw(200);
+       cout << "Interest earned: " << acc->calculateInterest() << endl;
+       acc->getAccountInfo();
+       acc->printStatement();
+       cout << "--------------------------\n";
+   }
+   
+   // Cleanup dynamically allocated memory
+   for (auto acc : accounts) {
+       delete acc;
+   }
+   
+   return 0;
+}
