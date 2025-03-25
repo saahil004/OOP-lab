@@ -53,6 +53,11 @@ class Fraction {
         return Fraction(numerator * other.numerator, denominator * other.denominator);
     }
     
+    Fraction operator/(const Fraction& other) {
+        return Fraction(numerator * other.denominator, denominator * other.numerator);
+    }
+    
+    friend istream& operator>>(istream& in, Fraction& other);
     friend ostream& operator<<(ostream& out, const Fraction& f);
 };
 
@@ -61,13 +66,20 @@ ostream& operator<<(ostream& out, const Fraction& f) {
     return out;
 }
 
+istream& operator>>(istream& in, Fraction& f) {
+    char c;
+    in >> f.numerator >> c >> f.denominator; 
+    return in;
+}
+
 
 
 
 int main() {
-    Fraction f1(-1,2);
-    Fraction f2(-3,1);
-    Fraction f3 = f2 - f1;
+    Fraction f1(0, 0);
+    cin >> f1;
+    Fraction f2(3,-1);
+    Fraction f3 = f2 / f1;
     cout << f1 << endl;
     cout << f2 << endl;
     cout << f3;
