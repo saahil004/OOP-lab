@@ -1,0 +1,41 @@
+#include <iostream>
+using namespace std;
+
+class Num {
+    private: 
+      int val;
+
+    public:
+      Num(int v) : val(v) {}
+      
+      //prefix
+      Num& operator--() {
+        val *= 4;
+        return *this;
+      }
+
+      //postfix
+      Num operator--(int) {
+        Num temp = *this;
+        val /= 4;
+        return temp;
+      }
+
+      friend ostream& operator<<(ostream& out, const Num& n);
+};
+
+ostream& operator<<(ostream& out, const Num& n) {
+    out << n.val << endl;
+    return out;
+}
+
+int main() {
+    Num n1(4);
+    cout << "After Postifx: ";
+    n1--;
+    cout << n1;
+    --n1;
+    cout << "After Prefix: ";
+    cout << n1;
+    return 0;
+}
