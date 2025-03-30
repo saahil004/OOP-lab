@@ -1,0 +1,23 @@
+#include <iostream>
+using namespace std;
+
+class Shape {
+    private:
+      double Area;
+
+    public:
+      Shape(double A) : Area(A) {}
+      
+      Shape operator+(const Shape& other) {
+        return Shape(Area + other.Area);
+      }
+
+      double getArea() {return Area;}
+};
+
+int main() {
+    Shape s1(22.2), s2(3.4);
+    Shape s3 = s1 + s2;
+    cout << s3.getArea();
+    return 0;
+}
