@@ -1,0 +1,163 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <math.h>
+using namespace std;
+
+class Polynomial {
+    private:
+      int degree;
+      vector<int> coefficients;
+      friend class PolynomialUtils;
+
+    public:
+      Polynomial(int d, vector<int> coeff) : degree(d), coefficients(coeff) {}
+
+      Polynomial() : degree(0) {}
+
+    int getDegree() {
+        return degree;
+    }
+
+
+      Polynomial operator+(const Polynomial& other) {
+           vector<int> newc;
+           int newd = (degree > other.degree) ? degree : other.degree;
+           int lowd = (degree < other.degree) ? degree : other.degree;
+           for (int i = 0; i <= lowd; i++)
+           {
+              newc.push_back(coefficients[i] + other.coefficients[i]);
+           }
+           if (lowd == degree)
+           {
+               for (int i = lowd+1; i <= newd; i++)
+               {
+                   newc.push_back(other.coefficients[i]);
+               }
+               
+           } else {
+            for (int i = lowd+1; i <= newd; i++)
+            {
+                newc.push_back(coefficients[i]);
+            }
+           }
+           return Polynomial(newd, newc);    
+            
+      }
+      
+      Polynomial operator-(const Polynomial& other) {
+           vector<int> newc;
+           int newd = (degree > other.degree) ? degree : other.degree;
+           int lowd = (degree < other.degree) ? degree : other.degree;
+           for (int i = 0; i <= lowd; i++)
+           {
+              newc.push_back(coefficients[i] - other.coefficients[i]);
+           }
+           if (lowd == degree)
+           {
+               for (int i = lowd+1; i <= newd; i++)
+               {
+                   newc.push_back(other.coefficients[i]);
+               }
+               
+           } else {
+            for (int i = lowd+1; i <= newd; i++)
+            {
+                newc.push_back(coefficients[i]);
+            }
+           }
+           return Polynomial(newd, newc);    
+            
+      }
+
+      Polynomial operator*(const Polynomial& other) {
+        vector<int> newc(degree + other.degree + 1);
+        for (int i = 0; i <= degree; i++)
+        {
+            for (int j = 0; j <= other.degree; j++)
+            {
+                newc[i + j] += coefficients[i] * other.coefficients[j];
+            }
+            
+        }
+        return Polynomial(newc.size() - 1, newc);
+      }
+
+
+      friend ostream& operator<<(ostream& out, const Polynomial& p);
+      friend istream& operator>>(istream& in, Polynomial& p);
+
+};
+
+class PolynomialUtils {
+    public:
+      int evaluate(const Polynomial& p, int x) {
+        int ans = 0;
+        for (int i = 0; i <= p.degree; i++)
+        {
+            ans += p.coefficients[i] * pow(x, i);
+        }
+        return ans;
+      }
+
+      Polynomial derivative(const Polynomial& p) {
+         int newd = p.degree - 1; //constant gets removed ofc
+         vector<int> newc(p.degree);
+         for (int i = 1; i <= p.degree; i++)
+         {
+            newc[i-1] = p.coefficients[i] * i;
+         }
+         return Polynomial(newd, newc);
+         
+      }
+};
+
+ostream& operator<<(ostream& out, const Polynomial& p) {
+    int c = 0;
+    for (int i = p.degree; i >= 0; i--) {
+        if (p.coefficients[i] > 0)
+        {
+            (c != 0) ? out << "+" <<  p.coefficients[i] << "x^" << i << " " : out << p.coefficients[i] << "x^" << i << " ";
+            c++;
+        } else if (p.coefficients[i] < 0) {
+            out <<  p.coefficients[i] << "x^" << i << " ";
+            c++;
+        }
+    }
+    return out;
+}
+
+istream& operator>>(istream& in, Polynomial& p) {
+    vector<int> newc;
+    int d;
+    cout << "Enter degree of polynomial: ";
+    in >> d;
+    for (int i = 0; i <= d; i++)
+    {
+        int val;
+        cout << "Enter coefficient of degree " << i << ": ";
+        in >> val;
+        newc.push_back(val);
+    }
+    p.degree = d;
+    p.coefficients = newc;
+}
+
+
+int main() {
+    Polynomial p;
+    cin >> p;
+    Polynomial p2(3, {1, -2, 3, 4});
+    Polynomial p3;
+    p3 = p * p2;
+    cout << "Multiplication saved in p3:\n";
+    cout << p3 << endl;
+    PolynomialUtils pu;   
+    cout << "p3 at x = 1\n";
+    cout << pu.evaluate(p3, 1) << endl;
+    
+    cout << "derivative of p3\n";
+    cout << pu.derivative(p3) << endl;
+
+    return 0;
+}
