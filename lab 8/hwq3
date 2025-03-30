@@ -1,0 +1,104 @@
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Person
+{
+protected:
+    int empID;
+
+public:
+    virtual void getData()
+    {
+        cout << "Enter Employee ID: ";
+        cin >> empID;
+    }
+
+    virtual void displayData() const
+    {
+        cout << "Employee ID: " << empID << endl;
+    }
+};
+
+class Admin : public Person
+{
+protected:
+    string name;
+    double monthlyIncome;
+
+public:
+    void getData() override
+    {
+        Person::getData();
+        cout << "Enter Employee Name: ";
+        cin.ignore();
+        getline(cin, name);
+        cout << "Enter Monthly Income: ";
+        cin >> monthlyIncome;
+    }
+
+    double bonus() const
+    {
+        return monthlyIncome * 0.05 * 12;
+    }
+
+    void displayData() const override
+    {
+        Person::displayData();
+        cout << "Employee Name: " << name << endl;
+        cout << "Monthly Income: $" << monthlyIncome << endl;
+        cout << "Annual Bonus: $" << bonus() << endl;
+        cout << "--------------------------" << endl;
+    }
+};
+
+class Accounts : public Person
+{
+protected:
+    string name;
+    double monthlyIncome;
+
+public:
+    void getData() override
+    {
+        Person::getData();
+        cout << "Enter Employee Name: ";
+        cin.ignore();
+        getline(cin, name);
+        cout << "Enter Monthly Income: ";
+        cin >> monthlyIncome;
+    }
+
+    double bonus() const
+    {
+        return monthlyIncome * 0.05 * 12;
+    }
+
+    void displayData() const override
+    {
+        Person::displayData();
+        cout << "Employee Name: " << name << endl;
+        cout << "Monthly Income: $" << monthlyIncome << endl;
+        cout << "Annual Bonus: $" << bonus() << endl;
+        cout << "--------------------------" << endl;
+    }
+};
+
+int main()
+{
+    Admin adminEmp;
+    Accounts accEmp;
+
+    cout << "Enter Admin Employee Data:" << endl;
+    adminEmp.getData();
+
+    cout << "\nEnter Accounts Employee Data:" << endl;
+    accEmp.getData();
+
+    cout << "\nEmployee Details:" << endl;
+    adminEmp.displayData();
+    accEmp.displayData();
+
+    return 0;
+}
