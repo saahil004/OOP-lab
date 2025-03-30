@@ -68,6 +68,7 @@ ostream& operator<<(ostream& out, const Fraction& f) {
 
 istream& operator>>(istream& in, Fraction& f) {
     char c;
+    cout << "Enter fraction: ";
     in >> f.numerator >> c >> f.denominator; 
     return in;
 }
@@ -76,10 +77,10 @@ istream& operator>>(istream& in, Fraction& f) {
 
 
 int main() {
-    Fraction f1(0, 0);
-    cin >> f1;
-    Fraction f2(3,-1);
-    Fraction f3 = f2 / f1;
+    Fraction f1(2, 4);
+    // cin >> f1;
+    Fraction f2(3,6);
+    Fraction f3 = f2 + f1;
     cout << f1 << endl;
     cout << f2 << endl;
     cout << f3;
