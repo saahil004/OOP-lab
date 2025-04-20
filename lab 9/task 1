@@ -1,0 +1,101 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Wallet {
+    private:
+      double balance;
+      double withdrawLimit; 
+      double depLimit;
+      double withdrawnToday;
+      double depositedToday;
+    
+    public:
+      Wallet(double b, double wl, double depl) : balance(b), withdrawLimit(wl), depLimit(40000), withdrawnToday(0), depositedToday(0) {}
+      
+      bool deposit(double b) {
+          if (b > 0 && b + depositedToday <= depLimit) {
+              balance += b;
+              depositedToday += b;
+              return true;
+          }
+          return false;
+      }
+      
+      bool withdraw(double b) {
+          if (b > 0 && b + withdrawnToday <= withdrawLimit && balance >= b) {
+              balance -= b;
+              withdrawnToday += b;
+              return true;
+          }
+          return false;
+      }
+      
+      void newDay() {
+          withdrawnToday = 0;
+          depositedToday = 0;
+          //new day started
+      } 
+      
+      void displayData() {
+          cout << "Balance: " << balance << endl;
+          cout << "Withdrawn today: " << withdrawnToday << endl;
+          cout << "Deposited Today: " << depositedToday << endl;
+          cout << "Daily withdrawal limit: " << withdrawLimit << endl;
+          cout << "Daily deposit limit: " << depLimit << endl;
+      }
+};
+
+class User {
+    private:
+      int userID;
+      string name;
+      Wallet wallet;
+     
+    public:
+      User(int id, string n) : userID(id), name(n), wallet(Wallet(0, 40000, 40000)) {}
+      
+      void manageWallet() {
+          int c = 2;
+          double cash = 0;
+          while (c > 0 && c < 5) {
+              cout << "Enter 1 to withdraw.\nEnter 2 to deposit.\nEnter 3 to check wallet.\nEnter 4 to reset day.\nEnter any other number to exit.\nChoice: ";
+              cin >> c;
+              switch (c) {
+                  case 1:
+                    cout << "Enter cash to withdraw: ";
+                    cin >> cash;
+                    (wallet.withdraw(cash)) ? cout << "Successful.\n" : cout << "Unsuccessful.\n";
+                    break;
+                 case 2:
+                    cout << "Enter cash to deposit: ";
+                    cin >> cash;
+                    (wallet.deposit(cash)) ? cout << "Successful.\n" : cout << "Unsuccessful.\n";
+                    break;
+                case 3:
+                   wallet.displayData();
+                   break;
+               case 4:
+                   wallet.newDay();
+                   break;
+              }
+          }
+      }
+};
+int main() {
+    int id;
+    string name;
+
+    cout << "Enter your User ID: ";
+    cin >> id;
+    cin.ignore(); // To clear newline character from buffer
+    cout << "Enter your Name: ";
+    getline(cin, name);
+
+    User user(id, name);
+    user.manageWallet();
+
+    cout << "Thank you, " << name << "! Have a nice day.\n";
+
+    return 0;
+}
