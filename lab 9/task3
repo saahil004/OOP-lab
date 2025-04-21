@@ -1,0 +1,123 @@
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+class PatientRecord {
+private:
+    string name;
+    int id;
+    string dob;
+    vector<string> medicalHistory;
+    vector<string> currentTreatment;
+    vector<string> billingDetails;
+
+public:
+    PatientRecord(string n, int i, string d) : name(n), id(i), dob(d) {}
+
+    string getPublicData() {
+        return "Name: " + name + ", ID: " + to_string(id) + ", DOB: " + dob;
+    }
+
+    string getMedicalData() {
+        return "Access Denied";
+    }
+
+    void addBillingDetails(const string& bill) {
+        billingDetails.push_back(bill);
+    }
+
+    string getBillingData() {
+        return "Access Denied";
+    }
+
+private:
+    void updateMedicalHistory(const string& entry) {
+        medicalHistory.push_back(entry);
+    }
+
+    void updateCurrentTreatment(const string& treatment) {
+        currentTreatment.push_back(treatment);
+    }
+
+    string getFullMedicalData() {
+        string data = "History:\n";
+        for (auto& h : medicalHistory) data += "- " + h + "\n";
+        data += "Current Treatments:\n";
+        for (auto& t : currentTreatment) data += "- " + t + "\n";
+        return data;
+    }
+
+    string getFullBillingData() {
+        string data = "Billing:\n";
+        for (auto& b : billingDetails) data += "- " + b + "\n";
+        return data;
+    }
+
+    friend class Doctor;
+    friend class Billing;
+};
+
+class Doctor {
+public:
+    void addMedicalEntry(PatientRecord& p, const string& history) {
+        p.updateMedicalHistory(history);
+    }
+
+    void addTreatment(PatientRecord& p, const string& treatment) {
+        p.updateCurrentTreatment(treatment);
+    }
+
+    void viewFullMedical(PatientRecord& p) {
+        cout << p.getFullMedicalData();
+    }
+};
+
+class Billing {
+public:
+    void addBill(PatientRecord& p, const string& bill) {
+        p.addBillingDetails(bill);
+    }
+
+    void viewBilling(PatientRecord& p) {
+        cout << p.getFullBillingData();
+    }
+};
+
+class Receptionist {
+public:
+    void tryAccessMedical(PatientRecord& p) {
+        cout << p.getMedicalData() << endl;
+    }
+
+    void tryAccessBilling(PatientRecord& p) {
+        cout << p.getBillingData() << endl;
+    }
+};
+
+int main() {
+    PatientRecord patient("John Doe", 123, "1990-05-01");
+
+    Doctor doc;
+    doc.addMedicalEntry(patient, "High blood pressure");
+    doc.addTreatment(patient, "Beta blockers");
+    cout << "Doctor viewing medical data:\n";
+    doc.viewFullMedical(patient);
+
+    Billing billStaff;
+    billStaff.addBill(patient, "$200 Consultation Fee");
+    cout << "\nBilling staff viewing billing data:\n";
+    billStaff.viewBilling(patient);
+
+    Receptionist rec;
+    cout << "\nReceptionist trying to view medical data:\n";
+    rec.tryAccessMedical(patient);
+
+    cout << "\nReceptionist trying to view billing data:\n";
+    rec.tryAccessBilling(patient);
+
+    cout << "\nPublic data:\n" << patient.getPublicData() << endl;
+
+    return 0;
+}
