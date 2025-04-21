@@ -1,3 +1,7 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
 class Student {
 public:
     virtual double getTuition(string status, int creditHours) = 0;
@@ -10,10 +14,23 @@ public:
     void setResearchTopic(string topic) { researchTopic = topic; }
     string getResearchTopic() { return researchTopic; }
 
-    double getTuition(string status, int creditHours) {
+    double getTuition(string status, int creditHours) override {
         if (status == "undergraduate") return 200 * creditHours;
         else if (status == "graduate") return 300 * creditHours;
         else if (status == "doctoral") return 400 * creditHours;
-        return 0;
+        else return 0;
     }
 };
+
+int main() {
+    GraduateStudent gs;
+    gs.setResearchTopic("Artificial Intelligence");
+
+    cout << "Research Topic: " << gs.getResearchTopic() << endl;
+
+    cout << "Undergraduate Tuition (15 credits): $" << gs.getTuition("undergraduate", 15) << endl;
+    cout << "Graduate Tuition (12 credits): $" << gs.getTuition("graduate", 12) << endl;
+    cout << "Doctoral Tuition (9 credits): $" << gs.getTuition("doctoral", 9) << endl;
+
+    return 0;
+}
