@@ -1,0 +1,128 @@
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+class Flight {
+private:
+    string flightNumber;
+    string departure;
+    string arrival;
+    int capacity;
+    vector<string> bookedPassengers;
+    vector<string> upgradedPassengers;
+
+public:
+    Flight(string fn, string dep, string arr, int cap)
+        : flightNumber(fn), departure(dep), arrival(arr), capacity(cap) {}
+
+    bool bookSeat(const string& passengerID) {
+        if (bookedPassengers.size() < capacity) {
+            bookedPassengers.push_back(passengerID);
+            return true;
+        }
+        return false;
+    }
+
+    bool cancelSeat(const string& passengerID) {
+        for (int i = 0; i < bookedPassengers.size(); ++i) {
+            if (bookedPassengers[i] == passengerID) {
+                bookedPassengers.erase(bookedPassengers.begin() + i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool upgradeSeat(const string& passengerID) {
+        for (int i = 0; i < bookedPassengers.size(); ++i) {
+            if (bookedPassengers[i] == passengerID) {
+                upgradedPassengers.push_back(passengerID);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void showBookedSeats() {
+        cout << "Booked Passengers:\n";
+        for (auto& p : bookedPassengers) cout << "- " << p << endl;
+    }
+
+    void showUpgradedSeats() {
+        cout << "Upgraded Passengers:\n";
+        for (auto& p : upgradedPassengers) cout << "- " << p << endl;
+    }
+
+    int seatsLeft() {
+        return capacity - bookedPassengers.size();
+    }
+
+    string getFlightInfo() {
+        return "Flight: " + flightNumber + " From: " + departure + " To: " + arrival;
+    }
+};
+
+class Passenger {
+private:
+    string id;
+    string name;
+
+public:
+    Passenger(string i, string n) : id(i), name(n) {}
+
+    void requestBooking(Flight& f) {
+        if (f.bookSeat(id))
+            cout << name << " booked successfully.\n";
+        else
+            cout << name << " booking failed. No seats left.\n";
+    }
+
+    void requestCancellation(Flight& f) {
+        if (f.cancelSeat(id))
+            cout << name << "'s seat cancelled.\n";
+        else
+            cout << name << " had no booking to cancel.\n";
+    }
+
+    void requestUpgrade(Flight& f) {
+        if (f.upgradeSeat(id))
+            cout << name << " upgraded.\n";
+        else
+            cout << name << " cannot be upgraded. Not booked.\n";
+    }
+};
+
+int main() {
+    Flight f1("PK101", "Karachi", "Islamabad", 2);
+    Flight f2("PK202", "Lahore", "Peshawar", 1);
+
+    Passenger p1("P001", "Ali");
+    Passenger p2("P002", "Sara");
+    Passenger p3("P003", "Zain");
+
+    cout << f1.getFlightInfo() << endl;
+    p1.requestBooking(f1);
+    p2.requestBooking(f1);
+    p3.requestBooking(f1); // should fail
+
+    p1.requestUpgrade(f1);
+    p3.requestUpgrade(f1); // should fail
+
+    p2.requestCancellation(f1);
+    p3.requestBooking(f1); // should succeed now
+
+    cout << "\nFlight 1 seat status:\n";
+    f1.showBookedSeats();
+    f1.showUpgradedSeats();
+
+    cout << "\n" << f2.getFlightInfo() << endl;
+    p1.requestBooking(f2);
+    p2.requestBooking(f2); // should fail
+
+    cout << "\nFlight 2 seat status:\n";
+    f2.showBookedSeats();
+
+    return 0;
+}
