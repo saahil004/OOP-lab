@@ -1,0 +1,19 @@
+class Student {
+public:
+    virtual double getTuition(string status, int creditHours) = 0;
+};
+
+class GraduateStudent : public Student {
+private:
+    string researchTopic;
+public:
+    void setResearchTopic(string topic) { researchTopic = topic; }
+    string getResearchTopic() { return researchTopic; }
+
+    double getTuition(string status, int creditHours) {
+        if (status == "undergraduate") return 200 * creditHours;
+        else if (status == "graduate") return 300 * creditHours;
+        else if (status == "doctoral") return 400 * creditHours;
+        return 0;
+    }
+};
