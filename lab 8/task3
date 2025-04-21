@@ -1,0 +1,130 @@
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+class BigInteger {
+    vector<int> digits;
+    bool isNegative;
+
+    void removeLeadingZeros() {
+        while (digits.size() > 1 && digits.back() == 0)
+            digits.pop_back();
+        if (digits.size() == 1 && digits[0] == 0)
+            isNegative = false;
+    }
+
+    static bool absLess(const BigInteger &a, const BigInteger &b) {
+        if (a.digits.size() != b.digits.size())
+            return a.digits.size() < b.digits.size();
+        for (int i = a.digits.size() - 1; i >= 0; i--)
+            if (a.digits[i] != b.digits[i])
+                return a.digits[i] < b.digits[i];
+        return false;
+    }
+
+public:
+    BigInteger(string num = "0") {
+        isNegative = num[0] == '-';
+        for (int i = num.size() - 1; i >= (isNegative ? 1 : 0); i--)
+            digits.push_back(num[i] - '0');
+        removeLeadingZeros();
+    }
+
+    friend ostream& operator<<(ostream &out, const BigInteger &n) {
+        if (n.isNegative) out << '-';
+        for (int i = n.digits.size() - 1; i >= 0; i--)
+            out << n.digits[i];
+        return out;
+    }
+
+    friend istream& operator>>(istream &in, BigInteger &n) {
+        string s;
+        in >> s;
+        n = BigInteger(s);
+        return in;
+    }
+
+    BigInteger operator+(const BigInteger &b) const {
+        if (isNegative == b.isNegative) {
+            BigInteger res;
+            res.isNegative = isNegative;
+            int carry = 0, i = 0;
+            while (i < digits.size() || i < b.digits.size() || carry) {
+                int sum = carry;
+                if (i < digits.size()) sum += digits[i];
+                if (i < b.digits.size()) sum += b.digits[i];
+                res.digits.push_back(sum % 10);
+                carry = sum / 10;
+                i++;
+            }
+            return res;
+        }
+        return *this - (-b);
+    }
+
+    BigInteger operator-() const {
+        BigInteger res = *this;
+        res.isNegative = !res.isNegative;
+        return res;
+    }
+
+    BigInteger operator-(const BigInteger &b) const {
+        if (isNegative != b.isNegative)
+            return *this + (-b);
+        if (absLess(*this, b))
+            return -(b - *this);
+        BigInteger res;
+        res.isNegative = isNegative;
+        int borrow = 0;
+        for (int i = 0; i < digits.size(); i++) {
+            int sub = digits[i] - borrow - (i < b.digits.size() ? b.digits[i] : 0);
+            if (sub < 0) {
+                sub += 10;
+                borrow = 1;
+            } else borrow = 0;
+            res.digits.push_back(sub);
+        }
+        res.removeLeadingZeros();
+        return res;
+    }
+
+    bool operator==(const BigInteger &b) const {
+        return isNegative == b.isNegative && digits == b.digits;
+    }
+
+    bool operator!=(const BigInteger &b) const {
+        return !(*this == b);
+    }
+
+    bool operator<(const BigInteger &b) const {
+        if (isNegative != b.isNegative)
+            return isNegative;
+        if (digits.size() != b.digits.size())
+            return isNegative ? digits.size() > b.digits.size() : digits.size() < b.digits.size();
+        for (int i = digits.size() - 1; i >= 0; i--)
+            if (digits[i] != b.digits[i])
+                return isNegative ? digits[i] > b.digits[i] : digits[i] < b.digits[i];
+        return false;
+    }
+
+    bool operator>(const BigInteger &b) const {
+        return b < *this;
+    }
+
+    bool operator<=(const BigInteger &b) const {
+        return !(*this > b);
+    }
+
+    bool operator>=(const BigInteger &b) const {
+        return !(*this < b);
+    }
+};
+int main() {
+    BigInteger a, b;
+    cin >> a >> b;
+    cout << "a + b = " << a + b << endl;
+    cout << "a - b = " << a - b << endl;
+    cout << "a == b: " << (a == b) << endl;
+    cout << "a < b: " << (a < b) << endl;
+}
