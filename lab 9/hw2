@@ -1,3 +1,7 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
 class Car {
 protected:
     string model;
@@ -26,3 +30,19 @@ public:
     string getCompany() { return company; }
     void setPrice(double p) { price = p + 1000; }
 };
+
+int main() {
+    Color car1;
+    car1.setModel("Model A");
+    car1.setColor("Blue");
+    car1.setPrice(15000);
+    cout << "Color Car: " << car1.getModel() << ", " << car1.getColor() << ", $" << car1.getPrice() << endl;
+
+    Company car2;
+    car2.setModel("Model B");
+    car2.setCompany("Toyota");
+    car2.setPrice(22000);
+    cout << "Company Car: " << car2.getModel() << ", " << car2.getCompany() << ", $" << car2.getPrice() << endl;
+
+    return 0;
+}
