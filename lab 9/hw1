@@ -22,3 +22,14 @@ public:
     Triangle(double b, double h) : base(b), height(h) {}
     double getArea() { return 0.5 * base * height; }
 };
+int main() {
+     Shape* rect = new Rectangle(10, 5);
+     Shape* tri = new Triangle(6, 4);
+
+    cout << "Rectangle Area: " << rect->getArea() << endl;
+    cout << "Triangle Area: " << tri->getArea() << endl;
+
+    delete rect;
+    delete tri;
+    return 0;
+}
