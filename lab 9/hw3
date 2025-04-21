@@ -1,0 +1,55 @@
+class Person {
+public:
+    virtual void getdata() = 0;
+    virtual void displaydata() = 0;
+    virtual double bonus() = 0;
+};
+
+class Admin : virtual public Person {
+protected:
+    string name;
+    double salary;
+public:
+    void getdata() {
+        name = "Admin Ali";
+        salary = 5000;
+    }
+    void displaydata() {
+        cout << "Admin Name: " << name << ", Salary: " << salary << endl;
+    }
+    double bonus() {
+        return salary * 0.1;
+    }
+};
+
+class Account : virtual public Person {
+protected:
+    string name;
+    double salary;
+public:
+    void getdata() {
+        name = "Account Sara";
+        salary = 6000;
+    }
+    void displaydata() {
+        cout << "Account Name: " << name << ", Salary: " << salary << endl;
+    }
+    double bonus() {
+        return salary * 0.15;
+    }
+};
+
+class Master : public Admin, public Account {
+public:
+    void getdata() {
+        Admin::getdata();
+        Account::getdata();
+    }
+    void displaydata() {
+        Admin::displaydata();
+        Account::displaydata();
+    }
+    double bonus() {
+        return Admin::bonus() + Account::bonus();
+    }
+};
