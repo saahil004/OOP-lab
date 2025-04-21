@@ -1,0 +1,28 @@
+class Car {
+protected:
+    string model;
+    double price;
+public:
+    void setModel(string m) { model = m; }
+    string getModel() { return model; }
+    virtual void setPrice(double p) = 0;
+    double getPrice() { return price; }
+};
+
+class Color : public Car {
+private:
+    string color;
+public:
+    void setColor(string c) { color = c; }
+    string getColor() { return color; }
+    void setPrice(double p) { price = p + 500; }
+};
+
+class Company : public Car {
+private:
+    string company;
+public:
+    void setCompany(string c) { company = c; }
+    string getCompany() { return company; }
+    void setPrice(double p) { price = p + 1000; }
+};
