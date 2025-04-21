@@ -141,6 +141,7 @@ istream& operator>>(istream& in, Polynomial& p) {
     }
     p.degree = d;
     p.coefficients = newc;
+    return in;
 }
 
 
