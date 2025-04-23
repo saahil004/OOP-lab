@@ -1,0 +1,68 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <filesystem>
+
+using namespace std;
+
+namespace fs = filesystem;
+
+const size_t MAX_SIZE = 1024 * 1024;
+const string LOG_NAME = "log";
+const string EXT_NAME = ".txt";
+
+class Logger
+{
+    int ind = 1;
+    ofstream writer;
+    string currentFile;
+    void createLog(const string &text)
+    {
+        writer.open(currentFile);
+        writer.close();
+    }
+
+
+public:
+    Logger() : currentFile(LOG_NAME + to_string(ind) + EXT_NAME) {
+        createLog(currentFile);
+    }
+
+    
+
+    void write(const string &line)
+    {
+        try
+        {
+            writer.open(currentFile, ios::app);
+            if (writer.fail())
+            {
+                throw runtime_error("FIle not found.\n");
+            }
+            writer << line << "\n";
+            if (fs::file_size(currentFile) > MAX_SIZE)
+            {
+                ind++;
+                currentFile = LOG_NAME + to_string(ind) + EXT_NAME;
+                createLog(currentFile);
+            }
+            
+            writer.close();
+        }
+        catch (const exception &e)
+        {
+            cerr << "Error: " << e.what() << endl;
+        }
+    }
+};
+
+int main() {
+    Logger l;
+
+    while (fs::file_size("log1.txt") < 1024*1024 + 512)
+    {
+        l.write("hi there"); //eventually creates log 2
+    }
+    
+    return 0;
+}
