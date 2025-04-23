@@ -1,0 +1,93 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+using namespace std;
+
+class Handler {
+    private:
+      string name;
+      ifstream reader;
+      ofstream writer;
+
+    public:
+      Handler(const string& n) : name(n) {}
+      
+      void readFile() {
+        try
+        {
+            reader.open(name);
+            if (reader.fail()) {
+                throw runtime_error("FIle not found.\n");
+            }
+            string line; int task = 0;
+            while (getline(reader, line))
+            {
+                task++;
+                cout << "Task " << task << ": " << line << endl;
+            }
+            if (task == 0) { cout << "No tasks to show.\n"; }
+            reader.close();
+        }
+        catch(const exception& e)
+        {
+            cerr << "Error: " << e.what() << endl;
+        }
+      }
+
+      void overwriteFile(const string& line) {
+        writer.open(name);
+        writer << line << "\n";
+        writer.close();
+      }
+
+      void appendFile(const string& line) {
+        try
+        {
+            writer.open(name, ios::app);
+            if (writer.fail()) {
+                throw runtime_error("FIle not found.\n");
+            }
+            writer << line << "\n";
+            writer.close();
+        }
+        catch(const exception& e)
+        {
+            cerr << "Error: " << e.what() << endl;
+        }
+      }
+};
+
+int main() {
+    Handler todo("todo.txt");
+    string line;
+    cout << "Add ur first task: ";
+    cin >> line;
+    todo.overwriteFile(line);
+    int c = 1;
+    while (c > 0 && c < 4)
+    {
+        cout << "Enter 1 to read todo list.\nEnter 2 to overrite the whole file.\nEnter 3 to add a task in existing todo list.\nEnter any other integer to escape.\nChoice: ";
+        cin >> c;
+        switch (c)
+        {
+        case 1:
+            todo.readFile();
+            break;
+        case 2:
+            cout << "Add ur first task: ";
+            cin >> line;
+            todo.overwriteFile(line);
+            break;
+        case 3:
+        cout << "Add new task: ";
+        cin >> line;
+        todo.appendFile(line);
+            break;
+        
+        default:
+            break;
+        }
+    }
+    
+    return 0;
+}
