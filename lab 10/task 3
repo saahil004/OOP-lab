@@ -1,0 +1,96 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <sstream>
+using namespace std;
+
+class User {
+    int userID;
+    string fname;
+public:
+    User(int i = 0, string f = "") : userID(i), fname(f) {}
+    int getID() const { return userID; }
+    string getName() const { return fname; }
+};
+
+class Product {
+    int productID;
+    string name;
+public:
+    Product(int i = 0, string n = "") : productID(i), name(n) {}
+    int getID() const { return productID; }
+    string getName() const { return name; }
+};
+
+class Order {
+    int orderID;
+    int userID;
+    int productID;
+public:
+    Order(int oid = 0, int uid = 0, int pid = 0) : orderID(oid), userID(uid), productID(pid) {}
+    int getUserID() const { return userID; }
+    int getProductID() const { return productID; }
+};
+
+void createDummyData() {
+    ofstream userFile("users.txt"), productFile("products.txt"), orderFile("orders.txt");
+
+    userFile << "1 Linus\n2 Ada\n";
+    productFile << "101 Laptop\n102 Keyboard\n103 Mouse\n";
+    orderFile << "201 1 101\n202 1 102\n203 2 103\n";
+
+    userFile.close();
+    productFile.close();
+    orderFile.close();
+}
+
+vector<User> loadUsers() {
+    vector<User> users;
+    ifstream in("users.txt");
+    int id; string name;
+    while (in >> id >> name) users.push_back(User(id, name));
+    return users;
+}
+
+vector<Product> loadProducts() {
+    vector<Product> products;
+    ifstream in("products.txt");
+    int id; string name;
+    while (in >> id >> name) products.push_back(Product(id, name));
+    return products;
+}
+
+vector<Order> loadOrders() {
+    vector<Order> orders;
+    ifstream in("orders.txt");
+    int oid, uid, pid;
+    while (in >> oid >> uid >> pid) orders.push_back(Order(oid, uid, pid));
+    return orders;
+}
+
+int main() {
+    createDummyData();
+
+    vector<User> users = loadUsers();
+    vector<Product> products = loadProducts();
+    vector<Order> orders = loadOrders();
+
+    int linusID = -1;
+    for (auto& u : users)
+        if (u.getName() == "Linus") linusID = u.getID();
+
+    if (linusID == -1) {
+        cout << "User not found.\n";
+        return 0;
+    }
+
+    cout << "Products ordered by Linus:\n";
+    for (auto& o : orders)
+        if (o.getUserID() == linusID)
+            for (auto& p : products)
+                if (p.getID() == o.getProductID())
+                    cout << "- " << p.getName() << endl;
+
+    return 0;
+}
