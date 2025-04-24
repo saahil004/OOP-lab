@@ -1,0 +1,51 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+using namespace std;
+
+class Handler {
+    private:
+      string name;
+      ifstream reader;
+      ofstream writer;
+
+    public:
+      Handler(const string& n) : name(n) {}
+      
+      void readFile() {
+        try
+        {
+            reader.open(name);
+            writer.open("managers.txt");
+            writer.close();
+            writer.open("managers.txt", ios::app);
+            if (reader.fail()) {
+                throw runtime_error("FIle not found.\n");
+            }
+            int id, y;
+            string name, des;
+            while (!reader.eof())
+            {
+                reader >> id >> name >> des >> y;
+                // cout << name << endl;
+                if (y >= 2 && des == "manager")
+                {
+                    writer << ++id << " " << name + " " << des + " " << ++y << "\n";
+                }
+                
+            }
+            reader.close();
+            writer.close();
+        }
+        catch(const exception& e)
+        {
+            cerr << "Error: " << e.what() << endl;
+        }
+      }
+};
+
+int main() {
+    Handler h("employees.txt"); // already exists
+    h.readFile();
+    return 0;
+}
