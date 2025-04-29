@@ -1,0 +1,84 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <vector>
+
+using namespace std;
+
+class Person {
+    private:
+      int age;
+      string name;
+      
+
+    public: 
+      Person(string n, int a) : name(n), age(a) {}
+
+      string getName() {
+        return name;
+      }
+};
+
+class Handler {
+    private:
+      string fname;
+      ifstream reader;
+      ofstream writer;
+
+    public:
+      Handler(string bfile) : fname(bfile) {}
+
+      void create() {
+        writer.open(fname, ios::binary);
+        writer.close();
+      }  
+
+      vector<Person> readData() {
+        Person P("", 0);
+        vector<Person> vec;
+        try
+        {
+            reader.open(fname, ios::binary);
+            if (reader.fail())
+            {
+                throw runtime_error("File didnt open.\n");
+            }
+            
+            while (reader.read(reinterpret_cast<char*>(&P), sizeof(Person))) {
+            vec.push_back(P);
+               //cout << static_cast<Person>(P).name << endl;
+            }
+            reader.close();
+            return vec;
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+            // return vec;
+        }
+        return vec;
+      }
+};
+
+int main() {
+    Handler h("nigga.bin");
+    Person p("saahil", 22);
+    Person p2("sahil", 22);
+    Person p3("aahil", 22);
+    h.create();
+    ofstream out;
+    out.open("nigga.bin", ios::binary);
+    out.write(reinterpret_cast<char*>(&p), sizeof(Person));
+    out.write(reinterpret_cast<char*>(&p2), sizeof(Person));
+    out.write(reinterpret_cast<char*>(&p3), sizeof(Person));
+    out.close();
+    vector<Person> vec = h.readData();
+    for (auto& p : vec) {
+        cout << p.getName() << "\n";
+    }
+    
+    h.readData();
+    return 0;
+}
+
+
