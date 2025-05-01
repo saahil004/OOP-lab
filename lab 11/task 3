@@ -1,0 +1,56 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class IndexOutOfBounds : public exception {
+  public:
+    const char * what() const noexcept override {
+        return "Index out of bounds.";
+    }
+};
+
+template <typename T>
+class SafeArray {
+    T* arr;
+    int size;
+    public:
+      SafeArray(int s) : size(s) {
+          arr = new T[s];
+      }
+      
+      T operator[](const int& i) {
+          try {
+              if (i >= size || i < 0) {
+                  throw IndexOutOfBounds();
+              }
+              return arr[i];
+          } catch (const IndexOutOfBounds& i) {
+              cerr << i.what() << endl;
+          }
+          return -1;
+      } 
+      
+      template <typename U>
+    void set(int i, U value) {
+        static_assert(is_same<T, U>::value, "Type mismatch in set()");
+        if (i >= size || i < 0)
+            throw IndexOutOfBounds();
+        arr[i] = value;
+    }
+
+      
+      
+};
+
+int main() {
+    SafeArray<int> sa(5);
+    sa.set(0, 2);
+    sa.set(1, 22);
+    sa.set(2, 222);
+    sa.set(3, 2222);
+    sa.set(4, 22222);
+    
+    int val = sa[6];
+    cout << val;
+    return 0;
+}
