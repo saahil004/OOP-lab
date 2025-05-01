@@ -1,0 +1,47 @@
+#include <iostream>
+#include <string>
+#include <type_traits>
+#include <any>
+#include <stdexcept>
+
+class BadTypeException : public std::exception {
+    public:
+      const char* what() const noexcept override {
+          return "Bad type exception.";
+      }
+};
+
+
+class TypeSafeContainer {
+    private:
+      std::any val;
+      
+    public:
+      template <typename T>
+      void setVal(T v) {
+          val = v;
+      }       
+      
+      template <typename T>
+      T getVal() {
+          try {
+              return std::any_cast<T>(val);
+          }
+          catch (const std::bad_any_cast& b) {
+              throw BadTypeException();
+          }
+      }
+};
+
+int main() {
+    TypeSafeContainer t1;
+    t1.setVal("hi");
+    try {
+        int n = t1.getVal<int>(); 
+        std::cout << n << std::endl;
+    } catch (const BadTypeException& c) {
+        std::cerr << c.what();
+    }
+    
+    return 0;
+}
